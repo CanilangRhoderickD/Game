@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PPE Catching Game</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        #gameCanvas {
+            border: 2px solid black;
+            background-color: #87CEEB;
+        }
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        #score {
+            font-size: 24px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>PPE Catching Game</h1>
+        <div id="score">Score: 0</div>
+        <canvas id="gameCanvas" width="800" height="600"></canvas>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreElement = document.getElementById('score');
+
+        // Game state
+        let score = 0;
+        let gameLoop;
+        let player = {
+            x: canvas.width / 2,
+            y: canvas.height - 100,
+            width: 50,
+            height: 100,
+            speed: 5,
+            isFullyEquipped: false,
+            equipment: {
+                helmet: false,
+                jacket: false,
+                boots: false,
+                gloves: false
+            }
+        };
+
+        // Equipment items that will fall
+        const equipmentTypes = [
+            { type: 'helmet', emoji: '⛑️', equipped: false, offsetX: 0, offsetY: -30 },
+            { type: 'jacket', emoji: '🧥', equipped: false, offsetX: 0, offsetY: 0 },
+            { type: 'boots', emoji: '👢', equipped: false, offsetX: 0, offsetY: 70 },
+            { type: 'gloves', emoji: '🧤', equipped: false, offsetX: -30, offsetY: 30 }
+        ];
+
+        let fallingItems = [];
+
+        // Controls
+        let keys = {
+            ArrowLeft: false,
+            ArrowRight: false
+        };
+
+        // Event listeners for controls
+        document.addEventListener('keydown', (e) => {
+            if (e.key in keys) {
+                keys[e.key] = true;
+            }
+        });
+
+        document.addEventListener('keyup', (e) => {
+            if (e.key in keys) {
+                keys[e.key] = false;
+            }
+        });
+
+        function drawPlayer() {
+            // Draw base player (sando and shorts)
+            ctx.fillStyle = '#FFE4C4'; // Skin color
+            ctx.fillRect(player.x, player.y, player.width, player.height);
+            
+            // Draw white sando
+            ctx.fillStyle = 'white';
+            ctx.fillRect(player.x, player.y, player.width, player.height * 0.5);
+            
+            // Draw blue shorts
+            ctx.fillStyle = 'blue';
+            ctx.fillRect(player.x, player.y + player.height * 0.5, player.width, player.height * 0.3);
+
+            // Set font for emojis
+            ctx.font = '30px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+
+            // Draw equipped items as emojis
+            equipmentTypes.forEach(item => {
+                if (player.equipment[item.type]) {
+                    ctx.fillText(item.emoji, 
+                        player.x + player.width/2 + item.offsetX, 
+                        player.y + player.height/2 + item.offsetY);
+                }
+            });
+        }
+
+        function spawnEquipment() {
+            if (Math.random() < 0.02) { // 2% chance each frame
+                const randomEquipment = equipmentTypes[Math.floor(Math.random() * equipmentTypes.length)];
+                fallingItems.push({
+                    x: Math.random() * (canvas.width - 30),
+                    y: 0,
+                    width: 30,
+                    height: 30,
+                    speed: 2,
+                    type: randomEquipment.type,
+                    emoji: randomEquipment.emoji
+                });
+            }
+        }
+
+        function updateGame() {
+            // Move player
+            if (keys.ArrowLeft && player.x > 0) {
+                player.x -= player.speed;
+            }
+            if (keys.ArrowRight && player.x < canvas.width - player.width) {
+                player.x += player.speed;
+            }
+
+            // Update falling items
+            fallingItems.forEach((item, index) => {
+                item.y += item.speed;
+
+                // Check collision
+                if (item.y + item.height > player.y &&
+                    item.y < player.y + player.height &&
+                    item.x + item.width > player.x &&
+                    item.x < player.x + player.width) {
+                    // Collision detected
+                    if (!player.equipment[item.type]) {
+                        player.equipment[item.type] = true;
+                        score += 10;
+                        scoreElement.textContent = `Score: ${score}`;
+                    }
+                    fallingItems.splice(index, 1);
+                }
+
+                // Remove items that fall off screen
+                if (item.y > canvas.height) {
+                    fallingItems.splice(index, 1);
+                }
+            });
+
+            // Check if player is fully equipped
+            if (!player.isFullyEquipped && 
+                player.equipment.helmet && 
+                player.equipment.jacket && 
+                player.equipment.boots && 
+                player.equipment.gloves) {
+                player.isFullyEquipped = true;
+                score += 50; // Bonus for getting all equipment
+                scoreElement.textContent = `Score: ${score}`;
+                alert('Congratulations! You are fully equipped! Keep playing to get a higher score!');
+                // Reset equipment for continued play
+                player.equipment = {
+                    helmet: false,
+                    jacket: false,
+                    boots: false,
+                    gloves: false
+                };
+                player.isFullyEquipped = false;
+            }
+        }
+
+        function drawGame() {
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw player
+            drawPlayer();
+
+            // Draw falling items as emojis
+            ctx.font = '30px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            
+            fallingItems.forEach(item => {
+                ctx.fillText(item.emoji, item.x + item.width/2, item.y + item.height/2);
+            });
+        }
+
+        function gameStep() {
+            spawnEquipment();
+            updateGame();
+            drawGame();
+            gameLoop = requestAnimationFrame(gameStep);
+        }
+
+        // Start the game
+        gameStep();
+    </script>
+</body>
+</html>

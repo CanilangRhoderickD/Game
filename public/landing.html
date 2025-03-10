@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Landing Page</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script>
+        const adminCredentials = { username: 'admin', password: 'password' }; // Example credentials
+        const users = []; // Array to store registered users
+
+        function login() {
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+            if (username === adminCredentials.username && password === adminCredentials.password) {
+                alert('Logged in as Admin!');
+                window.location.href = 'admin-dashboard.html'; // Redirect to admin dashboard
+            } else {
+                alert('Invalid credentials, please try again.');
+            }
+        }
+
+        function register() {
+            const username = document.getElementById('register-username').value;
+            const password = document.getElementById('register-password').value;
+            if (username && password) {
+                // Check if username already exists
+                const existingUser = users.find(user => user.username === username);
+                if (existingUser) {
+                    alert('Username already exists, please choose another.');
+                } else {
+                    users.push({ username, password });
+                    alert('Registered successfully! You can now sign in.');
+                    window.location.href = 'signin.html'; // Redirect to sign-in page
+                }
+            } else {
+                alert('Please fill in all fields.');
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center">Welcome to the Game Portal</h1>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Login</h5>
+                        <input type="text" id="login-username" class="form-control" placeholder="Username">
+                        <input type="password" id="login-password" class="form-control mt-2" placeholder="Password">
+                        <button class="btn btn-primary mt-3" onclick="login()">Login</button>
+                    </div>
+                </div>
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Register</h5>
+                        <input type="text" id="register-username" class="form-control" placeholder="Username">
+                        <input type="password" id="register-password" class="form-control mt-2" placeholder="Password">
+                        <button class="btn btn-success mt-3" onclick="register()">Register</button>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <a href="signin.html" class="btn btn-link">Already have an account? Sign In</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

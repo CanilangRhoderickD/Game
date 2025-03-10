@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4 Pics 1 Word - Fire Safety Edition</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .game-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 20px;
+        }
+        .images-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .image-box {
+            aspect-ratio: 1;
+            background-color: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .image-box img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        .letter-box {
+            width: 40px;
+            height: 40px;
+            border: 2px solid #007bff;
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 2px;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        .letter-options {
+            margin-top: 20px;
+        }
+        .letter-button {
+            width: 40px;
+            height: 40px;
+            margin: 2px;
+            font-weight: bold;
+        }
+        .hint-box {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+        .score-display {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <div class="game-container">
+        <h1 class="text-center mb-4">4 Pics 1 Word - Fire Safety Edition</h1>
+        <div class="score-display">Score: <span id="score">0</span></div>
+        
+        <div class="images-grid" id="images-container">
+            <!-- Images will be inserted here -->
+        </div>
+
+        <div class="text-center">
+            <div id="word-display" class="mb-4">
+                <!-- Letter boxes will be inserted here -->
+            </div>
+
+            <div class="hint-box">
+                <p id="hint-text">Hint will appear here...</p>
+                <button id="hint-btn" class="btn btn-info">Get Hint (-5 points)</button>
+            </div>
+
+            <div id="letter-options" class="letter-options">
+                <!-- Letter buttons will be inserted here -->
+            </div>
+
+            <button id="next-btn" class="btn btn-primary mt-4" style="display: none;">Next Word</button>
+        </div>
+    </div>
+
+    <script>
+        const puzzles = [
+            {
+                images: [
+                    '🚒', // Fire truck
+                    '🧯', // Fire extinguisher
+                    '🚨', // Emergency light
+                    '👨‍🚒'  // Firefighter
+                ],
+                word: 'RESCUE',
+                hint: 'To save someone from danger'
+            },
+            {
+                images: [
+                    '🔥', // Fire
+                    '💧', // Water
+                    '⚡', // Electricity
+                    '🌡️'  // Temperature
+                ],
+                word: 'HAZARD',
+                hint: 'A potential source of danger'
+            },
+            {
+                images: [
+                    '🚪', // Door
+                    '🏃', // Running
+                    '➡️', // Arrow
+                    '🚶'  // Walking
+                ],
+                word: 'ESCAPE',
+                hint: 'To get away from danger'
+            },
+            {
+                images: [
+                    '⛑️', // Helmet
+                    '🧤', // Gloves
+                    '🥾', // Boots
+                    '🧥'  // Jacket
+                ],
+                word: 'SAFETY',
+                hint: 'Protection from harm'
+            },
+            {
+                images: [
+                    '📢', // Alarm
+                    '💨', // Smoke
+                    '🔔', // Bell
+                    '⚠️'  // Warning
+                ],
+                word: 'ALERT',
+                hint: 'Warning of danger'
+            }
+        ];
+
+        let currentPuzzle = 0;
+        let score = 0;
+        let currentWord = '';
+        let guessedLetters = [];
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function displayPuzzle(index) {
+            const puzzle = puzzles[index];
+            currentWord = puzzle.word;
+            guessedLetters = new Array(currentWord.length).fill('');
+
+            // Display images
+            const imagesContainer = document.getElementById('images-container');
+            imagesContainer.innerHTML = puzzle.images.map(img => 
+                `<div class="image-box"><span style="font-size: 5rem;">${img}</span></div>`
+            ).join('');
+
+            // Display word boxes
+            const wordDisplay = document.getElementById('word-display');
+            wordDisplay.innerHTML = currentWord.split('').map(() => 
+                `<div class="letter-box"></div>`
+            ).join('');
+
+            // Create letter options
+            const letterOptions = document.getElementById('letter-options');
+            const availableLetters = shuffleArray([
+                ...currentWord.split(''),
+                ...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').slice(0, 12 - currentWord.length)
+            ]).slice(0, 12);
+
+            letterOptions.innerHTML = shuffleArray(availableLetters).map(letter =>
+                `<button class="btn btn-outline-primary letter-button" onclick="guessLetter('${letter}')">${letter}</button>`
+            ).join('');
+
+            // Reset hint
+            document.getElementById('hint-text').textContent = 'Need a hint? Click the button below!';
+            document.getElementById('hint-btn').style.display = 'inline-block';
+            document.getElementById('next-btn').style.display = 'none';
+        }
+
+        function guessLetter(letter) {
+            const positions = [];
+            for (let i = 0; i < currentWord.length; i++) {
+                if (currentWord[i] === letter && !guessedLetters[i]) {
+                    positions.push(i);
+                    guessedLetters[i] = letter;
+                }
+            }
+
+            if (positions.length > 0) {
+                // Update display
+                const letterBoxes = document.querySelectorAll('.letter-box');
+                positions.forEach(pos => {
+                    letterBoxes[pos].textContent = letter;
+                });
+
+                // Check if word is complete
+                if (guessedLetters.join('') === currentWord) {
+                    score += 10;
+                    document.getElementById('score').textContent = score;
+                    document.getElementById('hint-btn').style.display = 'none';
+                    document.getElementById('next-btn').style.display = 'inline-block';
+                }
+            }
+
+            // Disable the clicked button
+            event.target.disabled = true;
+        }
+
+        function showHint() {
+            const puzzle = puzzles[currentPuzzle];
+            document.getElementById('hint-text').textContent = puzzle.hint;
+            score = Math.max(0, score - 5); // Subtract 5 points for using hint
+            document.getElementById('score').textContent = score;
+            document.getElementById('hint-btn').style.display = 'none';
+        }
+
+        function nextPuzzle() {
+            currentPuzzle++;
+            if (currentPuzzle < puzzles.length) {
+                displayPuzzle(currentPuzzle);
+            } else {
+                alert(`Game Complete! Final Score: ${score}`);
+                currentPuzzle = 0;
+                score = 0;
+                document.getElementById('score').textContent = score;
+                displayPuzzle(currentPuzzle);
+            }
+        }
+
+        // Event listeners
+        document.getElementById('hint-btn').onclick = showHint;
+        document.getElementById('next-btn').onclick = nextPuzzle;
+
+        // Start the game
+        displayPuzzle(0);
+    </script>
+</body>
+</html>

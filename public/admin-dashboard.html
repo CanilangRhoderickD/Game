@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .container {
+            max-width: 800px;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <div class="container">
+        <h1 class="text-center">Admin Dashboard</h1>
+        <div class="mb-4">
+            <button class="btn btn-primary" onclick="showAddGameForm()">Add New Game</button>
+            <button class="btn btn-danger" onclick="logout()">Logout</button>
+        </div>
+        <div id="user-progress">
+            <h3>User Progress</h3>
+            <ul id="user-progress-ul" class="list-group">
+                <li class="list-group-item">Total Users: <span id="total-users">0</span></li>
+                <li class="list-group-item">Total Games Played: <span id="total-games-played">0</span></li>
+                <li class="list-group-item">Total Scores: <span id="total-scores">0</span></li>
+            </ul>
+        </div>
+        <div id="game-list">
+            <h3>Manage Games</h3>
+            <ul id="games-ul" class="list-group">
+                <!-- Game list will be populated here -->
+            </ul>
+        </div>
+        <div id="add-game-form" style="display: none;">
+            <h3>Add New Game</h3>
+            <input type="text" id="game-title" class="form-control" placeholder="Game Title" required>
+            <textarea id="game-description" class="form-control" placeholder="Game Description" required></textarea>
+            <button class="btn btn-success" onclick="addGame()">Add Game</button>
+            <button class="btn btn-secondary" onclick="hideAddGameForm()">Cancel</button>
+        </div>
+        <div id="edit-game-form" style="display: none;">
+            <h3>Edit Game</h3>
+            <input type="text" id="edit-game-title" class="form-control" placeholder="Game Title" required>
+            <textarea id="edit-game-description" class="form-control" placeholder="Game Description" required></textarea>
+            <button class="btn btn-warning" onclick="updateGame()">Update Game</button>
+            <button class="btn btn-secondary" onclick="hideEditGameForm()">Cancel</button>
+        </div>
+    </div>
+
+    <script>
+        const adminCredentials = { username: 'admin', password: 'password' }; // Example credentials
+        const games = [];
+        let editingIndex = -1;
+        let totalUsers = 0; // Placeholder for user count
+        let totalGamesPlayed = 0; // Placeholder for games played
+        let totalScores = 0; // Placeholder for total scores
+
+        function showAddGameForm() {
+            document.getElementById('add-game-form').style.display = 'block';
+            document.getElementById('edit-game-form').style.display = 'none';
+        }
+
+        function hideAddGameForm() {
+            document.getElementById('add-game-form').style.display = 'none';
+        }
+
+        function showEditGameForm(index) {
+            editingIndex = index;
+            const game = games[index];
+            document.getElementById('edit-game-title').value = game.title;
+            document.getElementById('edit-game-description').value = game.description;
+            document.getElementById('edit-game-form').style.display = 'block';
+            document.getElementById('add-game-form').style.display = 'none';
+        }
+
+        function hideEditGameForm() {
+            document.getElementById('edit-game-form').style.display = 'none';
+        }
+
+        function addGame() {
+            const title = document.getElementById('game-title').value;
+            const description = document.getElementById('game-description').value;
+            games.push({ title, description });
+            totalGamesPlayed++; // Increment games played
+            updateUserProgress(); // Update user progress
+            updateGameList();
+            hideAddGameForm();
+            document.getElementById('game-title').value = '';
+            document.getElementById('game-description').value = '';
+            alert('Game added successfully!');
+        }
+
+        function updateGame() {
+            const title = document.getElementById('edit-game-title').value;
+            const description = document.getElementById('edit-game-description').value;
+            games[editingIndex] = { title, description };
+            updateGameList();
+            hideEditGameForm();
+            alert('Game updated successfully!');
+        }
+
+        function deleteGame(index) {
+            if (confirm('Are you sure you want to delete this game?')) {
+                games.splice(index, 1);
+                updateGameList();
+                alert('Game deleted successfully!');
+            }
+        }
+
+        function updateGameList() {
+            const gamesUl = document.getElementById('games-ul');
+            gamesUl.innerHTML = '';
+            games.forEach((game, index) => {
+                const li = document.createElement('li');
+                li.className = 'list-group-item';
+                li.textContent = game.title;
+                li.onclick = () => showEditGameForm(index);
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'btn btn-danger btn-sm float-right';
+                deleteBtn.textContent = 'Delete';
+                deleteBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    deleteGame(index);
+                };
+                li.appendChild(deleteBtn);
+                gamesUl.appendChild(li);
+            });
+        }
+
+        function updateUserProgress() {
+            document.getElementById('total-users').textContent = totalUsers;
+            document.getElementById('total-games-played').textContent = totalGamesPlayed;
+            document.getElementById('total-scores').textContent = totalScores;
+        }
+
+        function logout() {
+            alert('Logged out successfully!');
+            window.location.href = 'landing.html'; // Redirect to landing page
+        }
+    </script>
+</body>
+</html>

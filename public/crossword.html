@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fire Safety Crossword</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .crossword-container {
+            display: grid;
+            grid-template-columns: repeat(10, 40px);
+            gap: 2px;
+            margin: 20px auto;
+            max-width: 450px;
+        }
+        .cell {
+            width: 40px;
+            height: 40px;
+            border: 1px solid #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        .input-cell {
+            border: 2px solid #007bff;
+            background-color: #f8f9fa;
+            text-align: center;
+        }
+        .clue {
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <div class="container text-center">
+        <h1>Fire Safety Crossword</h1>
+        <div class="clue">
+            <h4>Clues:</h4>
+            <div id="clue-list"></div>
+        </div>
+        <div class="crossword-container" id="crossword-grid"></div>
+        <button class="btn btn-primary" onclick="checkAnswers()">Check Answers</button>
+        <div id="feedback" class="mt-3"></div>
+    </div>
+
+    <script>
+        const crosswordData = {
+            grid: [
+                ['F', 'I', 'R', 'E', ' ', ' ', ' ', ' ', ' ', ' '],
+                [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+                [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+                [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+                ['S', 'A', 'F', 'E', 'T', 'Y', ' ', ' ', ' ', ' '],
+                [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+                [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+                [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+                [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+                [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
+            ],
+            clues: {
+                across: [
+                    { number: 1, clue: 'What do you call a rapid oxidation process?', answer: 'FIRE' },
+                    { number: 5, clue: 'The condition of being protected from danger.', answer: 'SAFETY' }
+                ],
+                down: [
+                    { number: 1, clue: 'A person who fights fires.', answer: 'FIREFIGHTER' }
+                ]
+            }
+        };
+
+        function createCrossword() {
+            const gridContainer = document.getElementById('crossword-grid');
+            crosswordData.grid.forEach((row, rowIndex) => {
+                row.forEach((cell, colIndex) => {
+                    const cellDiv = document.createElement('div');
+                    cellDiv.className = 'cell';
+                    if (cell !== ' ') {
+                        cellDiv.classList.add('input-cell');
+                        const input = document.createElement('input');
+                        input.type = 'text';
+                        input.maxLength = 1;
+                        input.style.width = '100%';
+                        input.style.height = '100%';
+                        input.style.textAlign = 'center';
+                        cellDiv.appendChild(input);
+                    }
+                    gridContainer.appendChild(cellDiv);
+                });
+            });
+            displayClues();
+        }
+
+        function displayClues() {
+            const clueList = document.getElementById('clue-list');
+            for (const direction in crosswordData.clues) {
+                crosswordData.clues[direction].forEach(clue => {
+                    const clueItem = document.createElement('div');
+                    clueItem.textContent = `${direction.charAt(0).toUpperCase() + direction.slice(1)} ${clue.number}: ${clue.clue}`;
+                    clueList.appendChild(clueItem);
+                });
+            }
+        }
+
+        function checkAnswers() {
+            const feedback = document.getElementById('feedback');
+            feedback.innerHTML = '';
+            let correct = true;
+            crosswordData.clues.across.forEach(clue => {
+                const answer = clue.answer;
+                const inputCells = document.querySelectorAll('.input-cell input');
+                for (let i = 0; i < answer.length; i++) {
+                    if (inputCells[clue.number - 1 + i].value.toUpperCase() !== answer[i]) {
+                        correct = false;
+                    }
+                }
+            });
+            if (correct) {
+                feedback.textContent = 'All answers are correct!';
+            } else {
+                feedback.textContent = 'Some answers are incorrect. Try again!';
+            }
+        }
+
+        createCrossword();
+    </script>
+</body>
+</html>

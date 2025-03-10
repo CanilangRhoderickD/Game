@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Available Games</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+    <script>
+        function checkSignIn() {
+            const signedInUser = localStorage.getItem('signedInUser');
+            if (!signedInUser) {
+                alert('You must sign in to access the games.');
+                window.location.href = 'signin.html'; // Redirect to sign-in page
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('signedInUser'); // Clear user session
+            alert('Logged out successfully!');
+            window.location.href = 'landing.html'; // Redirect to landing page
+        }
+
+        function accessAdmin() {
+            const password = prompt('Enter admin password:');
+            const adminPassword = 'password'; // This should match the admin dashboard password
+            if (password === adminPassword) {
+                window.location.href = 'admin-dashboard.html'; // Redirect to admin dashboard
+            } else {
+                alert('Incorrect password. Access denied.');
+            }
+        }
+    </script>
+</head>
+<body onload="checkSignIn()">
+    <div class="container mt-5">
+        <div class="d-flex justify-content-between">
+            <h1 class="text-center text-3xl font-bold">Available Games</h1>
+            <div>
+                <button class="btn btn-danger" onclick="logout()">Logout</button>
+                <button class="btn btn-primary" onclick="accessAdmin()">Admin</button>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Guess the Missing Letter</h5>
+                        <p class="card-text">Fill in the missing letters to complete terms related to firefighter equipment.</p>
+                        <a href="games.html" class="btn btn-primary">Play Now</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">PPE Catching Game</h5>
+                        <p class="card-text">Help the firefighter catch and equip their personal protective equipment! Use left and right arrow keys to move.</p>
+                        <a href="ppe-game.html" class="btn btn-primary">Play Now</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Firefighter Quiz Game</h5>
+                        <p class="card-text">Test your firefighting knowledge with multiple-choice questions! Get instant feedback and track your score.</p>
+                        <a href="quiz-game.html" class="btn btn-primary">Play Now</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">4 Pics 1 Word - Fire Safety</h5>
+                        <p class="card-text">Look at four fire safety related images and guess the word they have in common. Use hints if you get stuck!</p>
+                        <a href="4pics-game.html" class="btn btn-primary">Play Now</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Word Scramble - Fire Safety</h5>
+                        <p class="card-text">Unscramble safety-related vocabulary words across different difficulty levels.</p>
+                        <a href="word-scramble.html" class="btn btn-primary">Play Now</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Fire Safety Crossword</h5>
+                        <p class="card-text">Test your knowledge with a crossword puzzle filled with fire safety terms!</p>
+                        <a href="crossword.html" class="btn btn-primary">Play Now</a>
+                    </div>
+                </div>
+            </div>
+            <!-- Add more games here as needed -->
+        </div>
+    </div>
+</body>
+</html>

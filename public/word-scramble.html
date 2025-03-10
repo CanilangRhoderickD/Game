@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Scramble - Fire Safety Edition</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .game-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 20px;
+        }
+        .scrambled-word {
+            font-size: 2rem;
+            margin: 20px 0;
+        }
+        .input-box {
+            width: 100%;
+            padding: 10px;
+            font-size: 1.5rem;
+            border: 2px solid #007bff;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .hint {
+            margin: 10px 0;
+            font-size: 1rem;
+        }
+        .score-display {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <div class="game-container">
+        <h1 class="text-center mb-4">Word Scramble - Fire Safety Edition</h1>
+        <div class="score-display">Score: <span id="score">0</span></div>
+        <div id="word-container">
+            <div class="scrambled-word" id="scrambled-word"></div>
+            <input type="text" id="user-input" class="input-box" placeholder="Unscramble the word" />
+            <button id="submit-btn" class="btn btn-primary">Submit</button>
+            <div class="hint" id="hint-text">Click for a hint</div>
+        </div>
+        <button id="next-btn" class="btn btn-secondary mt-4" style="display: none;">Next Word</button>
+    </div>
+
+    <script>
+        const words = [
+            { word: 'FIRE', hint: 'A rapid oxidation process that produces heat and light.' },
+            { word: 'SAFETY', hint: 'The condition of being protected from or unlikely to cause danger.' },
+            { word: 'ALARM', hint: 'A warning signal that alerts people to danger.' },
+            { word: 'EXTINGUISHER', hint: 'A device used to put out small fires.' },
+            { word: 'PROTECTIVE', hint: 'Designed to prevent injury or damage.' }
+        ];
+
+        let currentWordIndex = 0;
+        let score = 0;
+
+        function shuffleWord(word) {
+            const shuffled = word.split('').sort(() => 0.5 - Math.random()).join('');
+            return shuffled;
+        }
+
+        function displayWord() {
+            const currentWord = words[currentWordIndex].word;
+            const scrambled = shuffleWord(currentWord);
+            document.getElementById('scrambled-word').textContent = scrambled;
+            document.getElementById('hint-text').textContent = 'Click for a hint';
+            document.getElementById('user-input').value = '';
+            document.getElementById('next-btn').style.display = 'none';
+        }
+
+        function checkAnswer() {
+            const userInput = document.getElementById('user-input').value.toUpperCase();
+            const currentWord = words[currentWordIndex].word;
+
+            if (userInput === currentWord) {
+                score += 10;
+                document.getElementById('score').textContent = score;
+                document.getElementById('hint-text').textContent = 'Correct!';
+                document.getElementById('next-btn').style.display = 'block';
+            } else {
+                document.getElementById('hint-text').textContent = 'Incorrect. Try again!';
+            }
+        }
+
+        function showHint() {
+            const hint = words[currentWordIndex].hint;
+            document.getElementById('hint-text').textContent = hint;
+        }
+
+        function nextWord() {
+            currentWordIndex++;
+            if (currentWordIndex < words.length) {
+                displayWord();
+            } else {
+                alert(`Game Complete! Final Score: ${score}`);
+                currentWordIndex = 0;
+                score = 0;
+                document.getElementById('score').textContent = score;
+                displayWord();
+            }
+        }
+
+        document.getElementById('submit-btn').onclick = checkAnswer;
+        document.getElementById('hint-text').onclick = showHint;
+        document.getElementById('next-btn').onclick = nextWord;
+
+        // Start the game
+        displayWord();
+    </script>
+</body>
+</html>

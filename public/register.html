@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script>
+        function register() {
+            const username = document.getElementById('register-username').value;
+            const password = document.getElementById('register-password').value;
+            if (username && password) {
+                // Load existing users from localStorage
+                const users = JSON.parse(localStorage.getItem('users')) || [];
+                // Check if username already exists
+                const existingUser = users.find(user => user.username === username);
+                if (existingUser) {
+                    alert('Username already exists, please choose another.');
+                } else {
+                    users.push({ username, password });
+                    localStorage.setItem('users', JSON.stringify(users)); // Save users to localStorage
+                    // Save user data to a file in the database folder
+                    const userData = JSON.stringify({ username, password });
+                    const filePath = 'C:\\Users\\Nathaniel\\Desktop\\Code\\GAME test\\database\\' + username + '.json';
+                    const fs = require('fs');
+                    fs.writeFileSync(filePath, userData);
+                    alert('Registered successfully! You can now sign in.');
+                    window.location.href = 'signin.html'; // Redirect to sign-in page
+                }
+            } else {
+                alert('Please fill in all fields.');
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center">Register</h1>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <input type="text" id="register-username" class="form-control" placeholder="Username" required>
+                        <input type="password" id="register-password" class="form-control mt-2" placeholder="Password" required>
+                        <button class="btn btn-success mt-3" onclick="register()">Register</button>
+                        <a href="signin.html" class="btn btn-link mt-3">Already have an account? Sign In</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
