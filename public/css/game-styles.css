@@ -1,0 +1,119 @@
+
+/* Enhanced Game Styling */
+:root {
+  --primary-color: #ff4500;
+  --secondary-color: #0066cc;
+  --accent-color: #33cc33;
+  --background-light: #f8f9fa;
+  --text-dark: #333;
+  --text-light: #fff;
+  --card-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  --transition-speed: 0.3s;
+}
+
+.game-container {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 30px;
+  background-color: var(--background-light);
+  border-radius: 10px;
+  box-shadow: var(--card-shadow);
+}
+
+.game-title {
+  color: var(--primary-color);
+  font-size: 2.5rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+}
+
+.game-description {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 1.2rem;
+  color: var(--text-dark);
+}
+
+.game-card {
+  transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+  margin-bottom: 25px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: none;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+
+.game-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--card-shadow);
+}
+
+.btn-game {
+  background-color: var(--primary-color);
+  color: var(--text-light);
+  padding: 12px 24px;
+  border: none;
+  border-radius: 5px;
+  font-weight: 600;
+  transition: all var(--transition-speed);
+}
+
+.btn-game:hover {
+  background-color: #e03d00;
+  transform: scale(1.05);
+}
+
+.score-display {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  text-align: center;
+  margin: 1rem 0;
+}
+
+.hint-text {
+  background-color: #f0f8ff;
+  padding: 10px 15px;
+  border-left: 4px solid var(--secondary-color);
+  margin: 15px 0;
+  border-radius: 4px;
+}
+
+.game-controls {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 0;
+}
+
+.level-selector {
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #fff;
+  border: 2px solid var(--primary-color);
+  font-weight: 600;
+}
+
+/* Animations */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.correct-answer {
+  animation: pulse 0.5s;
+  color: var(--accent-color);
+  font-weight: 700;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .game-container {
+    padding: 15px;
+  }
+  
+  .game-title {
+    font-size: 2rem;
+  }
+}

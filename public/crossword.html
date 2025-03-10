@@ -103,13 +103,22 @@
         }
 
         function checkAnswers() {
-            const feedback = document.getElementById('feedback');
+            // Create feedback element if it doesn't exist
+            let feedback = document.getElementById('feedback');
+            if (!feedback) {
+                feedback = document.createElement('div');
+                feedback.id = 'feedback';
+                feedback.className = 'alert mt-3';
+                document.querySelector('.container').appendChild(feedback);
+            }
+            
             feedback.innerHTML = '';
             let correct = true;
+            
             crosswordData.clues.across.forEach(clue => {
                 const answer = clue.answer;
                 const inputCells = document.querySelectorAll('.input-cell input');
-                for (let i = 0; i < answer.length; i++) {
+                for (let i = 0; i < answer.length; i++) { < answer.length; i++) {
                     if (inputCells[clue.number - 1 + i].value.toUpperCase() !== answer[i]) {
                         correct = false;
                     }

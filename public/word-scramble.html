@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,111 +6,498 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Word Scramble - Fire Safety Edition</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
+    <link href="/css/game-styles.css" rel="stylesheet">
     <style>
-        .game-container {
-            max-width: 800px;
-            margin: 2rem auto;
-            padding: 20px;
-        }
         .scrambled-word {
-            font-size: 2rem;
-            margin: 20px 0;
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: 5px;
+            margin: 30px 0;
+            text-align: center;
+            color: #ff4500;
         }
+        
         .input-box {
             width: 100%;
-            padding: 10px;
+            padding: 15px;
             font-size: 1.5rem;
-            border: 2px solid #007bff;
+            border: 2px solid #0066cc;
             border-radius: 5px;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            letter-spacing: 2px;
         }
-        .hint {
+        
+        .letter-tile {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            line-height: 50px;
+            text-align: center;
+            background-color: #ff4500;
+            color: white;
+            font-weight: 700;
+            margin: 5px;
+            border-radius: 5px;
+            box-shadow: 0 3px 5px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .letter-tile:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 8px rgba(0,0,0,0.3);
+        }
+        
+        .letter-tiles-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 30px 0;
+        }
+        
+        .game-controls {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+        }
+        
+        .hint-container {
+            background-color: #f0f8ff;
+            padding: 15px;
+            border-left: 4px solid #0066cc;
+            margin: 20px 0;
+            border-radius: 5px;
+            transition: opacity 0.3s;
+        }
+        
+        .level-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .easy-badge {
+            background-color: #e3fcef;
+            color: #0bbd5a;
+        }
+        
+        .medium-badge {
+            background-color: #fff8e1;
+            color: #ffa000;
+        }
+        
+        .hard-badge {
+            background-color: #ffebee;
+            color: #f44336;
+        }
+        
+        @keyframes celebrate {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .celebrating {
+            animation: celebrate 0.5s ease-in-out 3;
+        }
+        
+        .timer {
+            font-size: 1.2rem;
+            font-weight: 700;
             margin: 10px 0;
-            font-size: 1rem;
+            color: #0066cc;
         }
-        .score-display {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
+        
+        .progress-bar {
+            height: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background-color: #ff4500;
+            width: 0%;
+            transition: width 1s linear;
         }
     </style>
 </head>
-<body class="bg-light">
-    <div class="game-container">
-        <h1 class="text-center mb-4">Word Scramble - Fire Safety Edition</h1>
-        <div class="score-display">Score: <span id="score">0</span></div>
-        <div id="word-container">
-            <div class="scrambled-word" id="scrambled-word"></div>
-            <input type="text" id="user-input" class="input-box" placeholder="Unscramble the word" />
-            <button id="submit-btn" class="btn btn-primary">Submit</button>
-            <div class="hint" id="hint-text">Click for a hint</div>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">APULA</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="landing.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Games</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#">Word Scramble</a>
+                    </li>
+                </ul>
+            </div>
         </div>
-        <button id="next-btn" class="btn btn-secondary mt-4" style="display: none;">Next Word</button>
-    </div>
+    </nav>
 
+    <main id="main-content" class="container game-container mt-4">
+        <h1 class="game-title text-center">Fire Safety Word Scramble</h1>
+        <p class="game-description text-center">Unscramble the letters to form important fire safety words.</p>
+        
+        <div class="text-center mb-4">
+            <span id="difficulty-badge" class="level-badge medium-badge">Medium</span>
+        </div>
+        
+        <div class="timer text-center">Time: <span id="time-display">60</span> seconds</div>
+        <div class="progress-bar">
+            <div id="progress-fill" class="progress-fill"></div>
+        </div>
+        
+        <div class="score-display">Score: <span id="score">0</span></div>
+        
+        <div class="letter-tiles-container" id="letter-tiles">
+            <!-- Letter tiles will be added here by JavaScript -->
+        </div>
+        
+        <div class="form-group">
+            <label for="user-answer" class="sr-only">Your Answer</label>
+            <input type="text" id="user-answer" class="input-box" placeholder="Type your answer here..." readonly>
+        </div>
+        
+        <div class="text-center mb-4">
+            <button id="check-button" class="btn btn-game btn-lg mr-2">Check Answer</button>
+            <button id="clear-button" class="btn btn-secondary btn-lg">Clear</button>
+        </div>
+        
+        <div id="hint-container" class="hint-container" style="opacity: 0;">
+            <h5>Hint:</h5>
+            <p id="hint-text"></p>
+        </div>
+        
+        <div class="game-controls">
+            <button id="hint-button" class="btn btn-info">Show Hint</button>
+            <select id="level-selector" class="level-selector">
+                <option value="easy">Easy</option>
+                <option value="medium" selected>Medium</option>
+                <option value="hard">Hard</option>
+            </select>
+            <button id="next-button" class="btn btn-success">Next Word</button>
+        </div>
+        
+        <div class="text-center mt-4">
+            <a href="index.html" class="btn btn-secondary">Back to Games</a>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white mt-5 py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>APULA Fire Safety Education</h5>
+                    <p>Educating communities through interactive learning</p>
+                </div>
+                <div class="col-md-6 text-md-right">
+                    <p>© 2023 APULA. All rights reserved.</p>
+                    <p><small>Optimized for all browsers including Lynx</small></p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="/js/accessibility.js"></script>
+    <script src="/js/game-progress.js"></script>
     <script>
-        const words = [
-            { word: 'FIRE', hint: 'A rapid oxidation process that produces heat and light.' },
-            { word: 'SAFETY', hint: 'The condition of being protected from or unlikely to cause danger.' },
-            { word: 'ALARM', hint: 'A warning signal that alerts people to danger.' },
-            { word: 'EXTINGUISHER', hint: 'A device used to put out small fires.' },
-            { word: 'PROTECTIVE', hint: 'Designed to prevent injury or damage.' }
-        ];
-
-        let currentWordIndex = 0;
-        let score = 0;
-
-        function shuffleWord(word) {
-            const shuffled = word.split('').sort(() => 0.5 - Math.random()).join('');
-            return shuffled;
-        }
-
-        function displayWord() {
-            const currentWord = words[currentWordIndex].word;
-            const scrambled = shuffleWord(currentWord);
-            document.getElementById('scrambled-word').textContent = scrambled;
-            document.getElementById('hint-text').textContent = 'Click for a hint';
-            document.getElementById('user-input').value = '';
-            document.getElementById('next-btn').style.display = 'none';
-        }
-
-        function checkAnswer() {
-            const userInput = document.getElementById('user-input').value.toUpperCase();
-            const currentWord = words[currentWordIndex].word;
-
-            if (userInput === currentWord) {
-                score += 10;
-                document.getElementById('score').textContent = score;
-                document.getElementById('hint-text').textContent = 'Correct!';
-                document.getElementById('next-btn').style.display = 'block';
-            } else {
-                document.getElementById('hint-text').textContent = 'Incorrect. Try again!';
+        document.addEventListener('DOMContentLoaded', function() {
+            // Game words by difficulty
+            const words = {
+                easy: [
+                    { word: "SMOKE", hint: "Visible suspension of carbon or other particles in air, resulting from combustion." },
+                    { word: "FIRE", hint: "The rapid oxidation of a material in the exothermic chemical process of combustion." },
+                    { word: "EXIT", hint: "A way out of a building or area." },
+                    { word: "ALARM", hint: "A device that warns people of danger." },
+                    { word: "SAFE", hint: "Free from harm or risk." }
+                ],
+                medium: [
+                    { word: "EXTINGUISHER", hint: "An active fire protection device used to extinguish or control small fires." },
+                    { word: "EVACUATION", hint: "The removal of persons from a dangerous place due to an emergency." },
+                    { word: "DETECTOR", hint: "A device that detects the presence of substances or conditions." },
+                    { word: "HAZARD", hint: "A source of danger." },
+                    { word: "RESCUE", hint: "Save someone from a dangerous or distressing situation." }
+                ],
+                hard: [
+                    { word: "COMBUSTIBLE", hint: "Capable of catching fire and burning." },
+                    { word: "FLAMMABLE", hint: "Easily set on fire." },
+                    { word: "SPRINKLER", hint: "A fire protection device that automatically discharges water when a fire is detected." },
+                    { word: "EMERGENCY", hint: "A serious, unexpected, and often dangerous situation requiring immediate action." },
+                    { word: "PREVENTION", hint: "The action of stopping something from happening or arising." }
+                ]
+            };
+            
+            let currentLevel = 'medium';
+            let currentWordObj = null;
+            let score = 0;
+            let timeLeft = 60;
+            let timer = null;
+            
+            // Game elements
+            const letterTilesContainer = document.getElementById('letter-tiles');
+            const userAnswerInput = document.getElementById('user-answer');
+            const checkButton = document.getElementById('check-button');
+            const clearButton = document.getElementById('clear-button');
+            const nextButton = document.getElementById('next-button');
+            const hintButton = document.getElementById('hint-button');
+            const hintContainer = document.getElementById('hint-container');
+            const hintText = document.getElementById('hint-text');
+            const levelSelector = document.getElementById('level-selector');
+            const scoreDisplay = document.getElementById('score');
+            const difficultyBadge = document.getElementById('difficulty-badge');
+            const timeDisplay = document.getElementById('time-display');
+            const progressFill = document.getElementById('progress-fill');
+            
+            // Game initialization
+            function initGame() {
+                // Initialize progress tracking
+                if (window.gameTracker) {
+                    window.gameTracker.startGame('word-scramble', 'WordScrambler');
+                }
+                
+                updateDifficultyUI();
+                loadNewWord();
+                startTimer();
             }
-        }
-
-        function showHint() {
-            const hint = words[currentWordIndex].hint;
-            document.getElementById('hint-text').textContent = hint;
-        }
-
-        function nextWord() {
-            currentWordIndex++;
-            if (currentWordIndex < words.length) {
-                displayWord();
-            } else {
-                alert(`Game Complete! Final Score: ${score}`);
-                currentWordIndex = 0;
-                score = 0;
-                document.getElementById('score').textContent = score;
-                displayWord();
+            
+            // Update UI based on selected difficulty
+            function updateDifficultyUI() {
+                difficultyBadge.className = 'level-badge';
+                difficultyBadge.classList.add(`${currentLevel}-badge`);
+                difficultyBadge.textContent = capitalizeFirstLetter(currentLevel);
+                
+                // Set time based on difficulty
+                switch(currentLevel) {
+                    case 'easy':
+                        timeLeft = 90;
+                        break;
+                    case 'medium':
+                        timeLeft = 60;
+                        break;
+                    case 'hard':
+                        timeLeft = 45;
+                        break;
+                }
+                
+                timeDisplay.textContent = timeLeft;
+                if (timer) {
+                    clearInterval(timer);
+                }
+                startTimer();
             }
-        }
-
-        document.getElementById('submit-btn').onclick = checkAnswer;
-        document.getElementById('hint-text').onclick = showHint;
-        document.getElementById('next-btn').onclick = nextWord;
-
-        // Start the game
-        displayWord();
+            
+            // Helper function to capitalize first letter
+            function capitalizeFirstLetter(string) {
+                return string.charAt(0).toUpperCase() + string.slice(1);
+            }
+            
+            // Load a new random word from the selected difficulty
+            function loadNewWord() {
+                const wordsList = words[currentLevel];
+                const randomIndex = Math.floor(Math.random() * wordsList.length);
+                currentWordObj = wordsList[randomIndex];
+                
+                // Create scrambled version
+                const scrambled = scrambleWord(currentWordObj.word);
+                
+                // Clear previous tiles and user input
+                letterTilesContainer.innerHTML = '';
+                userAnswerInput.value = '';
+                
+                // Create letter tiles
+                for (let i = 0; i < scrambled.length; i++) {
+                    const tile = document.createElement('div');
+                    tile.className = 'letter-tile';
+                    tile.textContent = scrambled[i];
+                    tile.dataset.letter = scrambled[i];
+                    tile.addEventListener('click', function() {
+                        userAnswerInput.value += this.dataset.letter;
+                        this.style.visibility = 'hidden';
+                    });
+                    letterTilesContainer.appendChild(tile);
+                }
+                
+                // Set hint
+                hintText.textContent = currentWordObj.hint;
+                hintContainer.style.opacity = '0';
+                
+                // Announce for screen readers
+                if (window.screenReaderAnnounce) {
+                    window.screenReaderAnnounce("New word loaded. Difficulty: " + currentLevel);
+                }
+            }
+            
+            // Scramble a word
+            function scrambleWord(word) {
+                let charArray = word.split('');
+                for (let i = charArray.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [charArray[i], charArray[j]] = [charArray[j], charArray[i]];
+                }
+                return charArray;
+            }
+            
+            // Start timer countdown
+            function startTimer() {
+                progressFill.style.width = '100%';
+                timer = setInterval(function() {
+                    timeLeft--;
+                    timeDisplay.textContent = timeLeft;
+                    
+                    // Update progress bar
+                    const percentage = (timeLeft / (currentLevel === 'easy' ? 90 : (currentLevel === 'medium' ? 60 : 45))) * 100;
+                    progressFill.style.width = percentage + '%';
+                    
+                    if (timeLeft <= 0) {
+                        clearInterval(timer);
+                        checkAnswer(true); // Force check with timeout
+                    }
+                }, 1000);
+            }
+            
+            // Check user's answer
+            function checkAnswer(isTimeout = false) {
+                clearInterval(timer);
+                
+                const userAnswer = userAnswerInput.value.toUpperCase();
+                const correctAnswer = currentWordObj.word;
+                
+                if (isTimeout) {
+                    alert("Time's up! The correct word was: " + correctAnswer);
+                    loadNewWord();
+                    startTimer();
+                    return;
+                }
+                
+                if (userAnswer === correctAnswer) {
+                    // Calculate points based on difficulty and time left
+                    const difficultyMultiplier = currentLevel === 'easy' ? 1 : (currentLevel === 'medium' ? 2 : 3);
+                    const points = 10 * difficultyMultiplier + Math.floor(timeLeft / 5);
+                    score += points;
+                    scoreDisplay.textContent = score;
+                    
+                    // Visual celebration
+                    letterTilesContainer.classList.add('celebrating');
+                    setTimeout(() => {
+                        letterTilesContainer.classList.remove('celebrating');
+                    }, 1500);
+                    
+                    // Alert and update progress
+                    alert(`Correct! +${points} points`);
+                    
+                    // Update progress tracking
+                    if (window.gameTracker) {
+                        window.gameTracker.updateScore('word-scramble', score, 100);
+                    }
+                    
+                    loadNewWord();
+                    startTimer();
+                } else {
+                    alert("Incorrect! Try again or click 'Next' for a new word.");
+                }
+            }
+            
+            // Event Listeners
+            checkButton.addEventListener('click', function() {
+                checkAnswer();
+            });
+            
+            clearButton.addEventListener('click', function() {
+                userAnswerInput.value = '';
+                // Restore all tiles
+                const tiles = letterTilesContainer.querySelectorAll('.letter-tile');
+                tiles.forEach(tile => {
+                    tile.style.visibility = 'visible';
+                });
+            });
+            
+            nextButton.addEventListener('click', function() {
+                loadNewWord();
+                clearInterval(timer);
+                startTimer();
+            });
+            
+            hintButton.addEventListener('click', function() {
+                hintContainer.style.opacity = '1';
+                
+                // Announce hint for screen readers
+                if (window.screenReaderAnnounce) {
+                    window.screenReaderAnnounce("Hint: " + currentWordObj.hint);
+                }
+            });
+            
+            levelSelector.addEventListener('change', function() {
+                currentLevel = this.value;
+                updateDifficultyUI();
+                loadNewWord();
+            });
+            
+            // Keyboard support for accessibility
+            document.addEventListener('keydown', function(e) {
+                const key = e.key.toUpperCase();
+                if (/^[A-Z]$/.test(key)) {
+                    // Find a visible tile with this letter
+                    const tiles = Array.from(letterTilesContainer.querySelectorAll('.letter-tile'));
+                    const visibleTile = tiles.find(tile => 
+                        tile.textContent.toUpperCase() === key && 
+                        tile.style.visibility !== 'hidden'
+                    );
+                    
+                    if (visibleTile) {
+                        userAnswerInput.value += visibleTile.dataset.letter;
+                        visibleTile.style.visibility = 'hidden';
+                    }
+                } else if (e.key === 'Enter') {
+                    checkAnswer();
+                } else if (e.key === 'Escape') {
+                    clearButton.click();
+                }
+            });
+            
+            // Start the game
+            initGame();
+            
+            // Add special support for Lynx text browser
+            if (navigator.userAgent.toLowerCase().indexOf('lynx') !== -1) {
+                // Create a text-based version of the game
+                const lynxGameContainer = document.createElement('div');
+                lynxGameContainer.innerHTML = `
+                    <h2>Word Scramble - Text Mode</h2>
+                    <p>Current Difficulty: ${currentLevel}</p>
+                    <p>Scrambled Word: ${Array.from(letterTilesContainer.querySelectorAll('.letter-tile')).map(tile => tile.textContent).join(' ')}</p>
+                    <p>Hint: ${currentWordObj.hint}</p>
+                    <form>
+                        <label for="lynx-answer">Your Answer:</label>
+                        <input type="text" id="lynx-answer" name="answer">
+                        <button type="submit">Check Answer</button>
+                    </form>
+                `;
+                
+                document.body.appendChild(lynxGameContainer);
+            }
+        });
     </script>
-</body>
-</html>

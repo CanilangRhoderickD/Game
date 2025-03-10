@@ -1,0 +1,45 @@
+Create a compelling landing page for 'APULA: A Web-Based Application to Educate and Empower Residents in Fire Prevention Through Engaging Games.'
+
+Landing Page Requirements:
+Hero Section:
+
+Display the title prominently:
+APULA: A Web-Based Application to Educate and Empower Residents in Fire Prevention Through Engaging Games
+A brief tagline emphasizing the app’s mission:
+'Learn fire safety in an interactive way! Engage in fun and educational games designed to equip you with life-saving knowledge.'
+A call-to-action (CTA) button labeled “Start Learning” or “Play Now”
+About Section:
+
+Explain APULA’s purpose:
+'APULA is an innovative web-based platform designed to educate communities on fire prevention through interactive and engaging games. Our goal is to make learning about fire safety fun, accessible, and memorable for everyone.'
+Highlight the importance of fire safety education and how the platform helps prevent fire-related accidents.
+Game Features Section:
+
+Showcase the different interactive games available:
+4 Pics 1 Word: Identify fire safety-related terms.
+Crossword: Solve fire prevention puzzles.
+Guess the Missing Letter: Learn fire-related terminology.
+PPE Game: Match personal protective equipment with its purpose.
+Quiz Game: Test your fire safety knowledge.
+Word Scrambler: Unscramble important fire prevention words.
+Team Section:
+
+Introduce the creators with a three-card layout:
+[Person 1’s Name] – Lead Developer
+[Person 2’s Name] – Game Designer
+[Person 3’s Name] – Content & Research Specialist
+A short paragraph about their motivation behind creating APULA and their commitment to fire safety education.
+Why Fire Safety Matters Section:
+
+Statistics or facts about fire-related incidents.
+Common causes of fire and preventive measures.
+The role of education in reducing fire hazards.
+Call-to-Action Section:
+
+Encourage visitors to start playing and learning.
+A button labeled “Explore Now” or “Get Started” that directs users to the game module.
+Footer Section:
+
+Links to social media (if applicable).
+Contact information for inquiries.
+Copyright and credits to the creators."

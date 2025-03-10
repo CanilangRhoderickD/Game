@@ -17,13 +17,29 @@
                 if (existingUser) {
                     alert('Username already exists, please choose another.');
                 } else {
+                    // Add user locally
                     users.push({ username, password });
                     localStorage.setItem('users', JSON.stringify(users)); // Save users to localStorage
-                    // Save user data to a file in the database folder
-                    const userData = JSON.stringify({ username, password });
-                    const filePath = 'C:\\Users\\Nathaniel\\Desktop\\Code\\GAME test\\database\\' + username + '.json';
-                    const fs = require('fs');
-                    fs.writeFileSync(filePath, userData);
+                    
+                    // If using server-side registration, you could use fetch API here
+                    // For example:
+                    // fetch('/api/users/register', {
+                    //     method: 'POST',
+                    //     headers: {
+                    //         'Content-Type': 'application/json',
+                    //     },
+                    //     body: JSON.stringify({ username, password }),
+                    // })
+                    // .then(response => response.json())
+                    // .then(data => {
+                    //     alert('Registered successfully! You can now sign in.');
+                    //     window.location.href = 'signin.html';
+                    // })
+                    // .catch(error => {
+                    //     alert('Registration failed: ' + error.message);
+                    // });
+                    
+                    // For now, just redirect
                     alert('Registered successfully! You can now sign in.');
                     window.location.href = 'signin.html'; // Redirect to sign-in page
                 }

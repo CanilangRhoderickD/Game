@@ -3,68 +3,399 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Landing Page</title>
+    <title>APULA - Fire Prevention Education</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <script>
-        const adminCredentials = { username: 'admin', password: 'password' }; // Example credentials
-        const users = []; // Array to store registered users
-
-        function login() {
-            const username = document.getElementById('login-username').value;
-            const password = document.getElementById('login-password').value;
-            if (username === adminCredentials.username && password === adminCredentials.password) {
-                alert('Logged in as Admin!');
-                window.location.href = 'admin-dashboard.html'; // Redirect to admin dashboard
-            } else {
-                alert('Invalid credentials, please try again.');
-            }
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
+    <link href="/css/styles.css" rel="stylesheet">
+    <style>
+        /* Custom Styles for Landing Page */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
         }
 
-        function register() {
-            const username = document.getElementById('register-username').value;
-            const password = document.getElementById('register-password').value;
-            if (username && password) {
-                // Check if username already exists
-                const existingUser = users.find(user => user.username === username);
-                if (existingUser) {
-                    alert('Username already exists, please choose another.');
-                } else {
-                    users.push({ username, password });
-                    alert('Registered successfully! You can now sign in.');
-                    window.location.href = 'signin.html'; // Redirect to sign-in page
-                }
-            } else {
-                alert('Please fill in all fields.');
-            }
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                        url('https://images.unsplash.com/photo-1507835661088-ac1e84fe645f');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 120px 0;
+            text-align: center;
         }
-    </script>
+
+        .section {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            margin-bottom: 50px;
+            font-weight: 700;
+        }
+
+        .game-card {
+            border: none;
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin-bottom: 20px;
+            height: 100%;
+        }
+
+        .game-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .team-card {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .team-card img {
+            border-radius: 50%;
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            margin-bottom: 15px;
+        }
+
+        .cta-section {
+            background-color: #f8f9fa;
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background-color: #ff4500;
+            border-color: #ff4500;
+            padding: 12px 30px;
+            font-weight: 600;
+            margin-top: 20px;
+        }
+
+        .btn-primary:hover {
+            background-color: #e03d00;
+            border-color: #e03d00;
+        }
+
+        .stats-box {
+            text-align: center;
+            padding: 30px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .stats-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #ff4500;
+        }
+
+        footer {
+            background-color: #343a40;
+            color: white;
+            padding: 40px 0;
+        }
+
+        .social-icons a {
+            color: white;
+            font-size: 1.5rem;
+            margin: 0 10px;
+        }
+
+        /* Admin Login Form */
+        .login-form {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            display: none;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1 class="text-center">Welcome to the Game Portal</h1>
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <div class="card mt-4">
-                    <div class="card-body">
-                        <h5 class="card-title">Login</h5>
-                        <input type="text" id="login-username" class="form-control" placeholder="Username">
-                        <input type="password" id="login-password" class="form-control mt-2" placeholder="Password">
-                        <button class="btn btn-primary mt-3" onclick="login()">Login</button>
-                    </div>
-                </div>
-                <div class="card mt-4">
-                    <div class="card-body">
-                        <h5 class="card-title">Register</h5>
-                        <input type="text" id="register-username" class="form-control" placeholder="Username">
-                        <input type="password" id="register-password" class="form-control mt-2" placeholder="Password">
-                        <button class="btn btn-success mt-3" onclick="register()">Register</button>
-                    </div>
-                </div>
-                <div class="mt-3">
-                    <a href="signin.html" class="btn btn-link">Already have an account? Sign In</a>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">APULA</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#games">Games</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#team">Team</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#safety">Safety</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-outline-light btn-sm ml-2" href="signin.html">Sign In</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-outline-light btn-sm ml-2" href="register.html">Register</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showLoginForm()">Admin</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Admin Login Form (hidden by default) -->
+    <div id="login-form" class="login-form mt-3">
+        <h4 class="text-center mb-4">Admin Login</h4>
+        <div class="form-group">
+            <label for="login-username">Username</label>
+            <input type="text" id="login-username" class="form-control" placeholder="Enter username" value="admin">
+        </div>
+        <div class="form-group">
+            <label for="login-password">Password</label>
+            <input type="password" id="login-password" class="form-control" placeholder="Enter password">
+        </div>
+        <button onclick="adminLogin()" class="btn btn-primary btn-block">Login</button>
+        <button onclick="hideLoginForm()" class="btn btn-secondary btn-block mt-2">Cancel</button>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1 class="display-4 mb-4">APULA: A Web-Based Application to Educate and Empower Residents in Fire Prevention Through Engaging Games</h1>
+            <p class="lead mb-5">Learn fire safety in an interactive way! Engage in fun and educational games designed to equip you with life-saving knowledge.</p>
+            <a href="index.html" class="btn btn-primary btn-lg">Start Learning</a>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="section">
+        <div class="container">
+            <h2 class="section-title text-center">About APULA</h2>
+            <div class="row">
+                <div class="col-lg-8 mx-auto text-center">
+                    <p class="lead">APULA is an innovative web-based platform designed to educate communities on fire prevention through interactive and engaging games. Our goal is to make learning about fire safety fun, accessible, and memorable for everyone.</p>
+                    <p>Fire-related accidents can be prevented with proper knowledge and awareness. APULA bridges the gap between traditional fire safety education and modern interactive learning, making critical safety information more engaging and memorable.</p>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
+
+    <!-- Game Features Section -->
+    <section id="games" class="section bg-light">
+        <div class="container">
+            <h2 class="section-title text-center">Our Educational Games</h2>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card game-card">
+                        <div class="card-body">
+                            <h5 class="card-title">4 Pics 1 Word</h5>
+                            <p class="card-text">Identify fire safety-related terms by looking at four images that have something in common.</p>
+                            <img src="https://via.placeholder.com/350x150?text=4+Pics+1+Word" class="img-fluid mb-3" alt="4 Pics 1 Word">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card game-card">
+                        <div class="card-body">
+                            <h5 class="card-title">Crossword</h5>
+                            <p class="card-text">Test your knowledge of fire safety terms and concepts by solving challenging crossword puzzles.</p>
+                            <img src="https://via.placeholder.com/350x150?text=Crossword" class="img-fluid mb-3" alt="Crossword">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card game-card">
+                        <div class="card-body">
+                            <h5 class="card-title">Guess the Missing Letter</h5>
+                            <p class="card-text">Learn fire-related terminology by filling in missing letters in words related to fire safety.</p>
+                            <img src="https://via.placeholder.com/350x150?text=Missing+Letter" class="img-fluid mb-3" alt="Missing Letter">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card game-card">
+                        <div class="card-body">
+                            <h5 class="card-title">PPE Game</h5>
+                            <p class="card-text">Learn about personal protective equipment by matching gear with its purpose in fire safety.</p>
+                            <img src="https://via.placeholder.com/350x150?text=PPE+Game" class="img-fluid mb-3" alt="PPE Game">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card game-card">
+                        <div class="card-body">
+                            <h5 class="card-title">Quiz Game</h5>
+                            <p class="card-text">Test your fire safety knowledge with challenging multiple-choice questions.</p>
+                            <img src="https://via.placeholder.com/350x150?text=Quiz+Game" class="img-fluid mb-3" alt="Quiz Game">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card game-card">
+                        <div class="card-body">
+                            <h5 class="card-title">Word Scrambler</h5>
+                            <p class="card-text">Unscramble important fire prevention words to reinforce your vocabulary.</p>
+                            <img src="https://via.placeholder.com/350x150?text=Word+Scrambler" class="img-fluid mb-3" alt="Word Scrambler">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section id="team" class="section">
+        <div class="container">
+            <h2 class="section-title text-center">Meet Our Team</h2>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="team-card">
+                        <img src="https://via.placeholder.com/150?text=Developer" alt="Lead Developer">
+                        <h4>John Doe</h4>
+                        <p class="text-muted">Lead Developer</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="team-card">
+                        <img src="https://via.placeholder.com/150?text=Designer" alt="Game Designer">
+                        <h4>Jane Smith</h4>
+                        <p class="text-muted">Game Designer</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="team-card">
+                        <img src="https://via.placeholder.com/150?text=Content" alt="Content Specialist">
+                        <h4>Robert Johnson</h4>
+                        <p class="text-muted">Content & Research Specialist</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-lg-8 mx-auto text-center">
+                    <p>Our team is passionate about fire safety education and has worked diligently to create an engaging platform that makes learning about fire prevention accessible and enjoyable. We believe that interactive education is the key to reducing fire-related incidents in communities.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Fire Safety Matters Section -->
+    <section id="safety" class="section bg-light">
+        <div class="container">
+            <h2 class="section-title text-center">Why Fire Safety Matters</h2>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="stats-box">
+                        <div class="stats-number">3,500+</div>
+                        <p>Fire-related deaths in residential buildings annually</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stats-box">
+                        <div class="stats-number">50%</div>
+                        <p>Of home fires are preventable with proper education</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stats-box">
+                        <div class="stats-number">80%</div>
+                        <p>Improved response rate after interactive fire safety training</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-lg-8 mx-auto">
+                    <h4 class="text-center mb-4">Common Causes of Fire</h4>
+                    <ul class="list-group">
+                        <li class="list-group-item">Unattended cooking equipment</li>
+                        <li class="list-group-item">Electrical systems and appliances</li>
+                        <li class="list-group-item">Heating equipment</li>
+                        <li class="list-group-item">Smoking materials</li>
+                        <li class="list-group-item">Candles and open flames</li>
+                    </ul>
+                    <p class="mt-4">Education plays a crucial role in reducing fire hazards. By understanding the causes of fires and proper preventive measures, individuals can significantly reduce the risk of fire-related incidents in their homes and communities.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call-to-Action Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2 class="mb-4">Ready to Learn Fire Safety in a Fun Way?</h2>
+            <p class="lead mb-4">Join thousands of users who are already enhancing their fire safety knowledge through our interactive games.</p>
+            <a href="index.html" class="btn btn-primary btn-lg">Get Started Now</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>APULA</h5>
+                    <p>Educating communities on fire prevention through interactive games.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Contact Us</h5>
+                    <p>Email: info@apula.edu<br>
+                    Phone: (123) 456-7890</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Follow Us</h5>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-12 text-center">
+                    <p>&copy; 2023 APULA. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // Simple Authentication Functions
+        function showLoginForm() {
+            document.getElementById('login-form').style.display = 'block';
+            // Scroll to login form
+            document.getElementById('login-form').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function hideLoginForm() {
+            document.getElementById('login-form').style.display = 'none';
+        }
+
+        function adminLogin() {
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+            console.log('Admin login attempt:', username);
+
+            // Check credentials directly
+            if (username === 'admin' && password === 'password') {
+                localStorage.setItem('adminUser', JSON.stringify({ username: 'admin' }));
+                console.log('Admin login successful');
+                alert('Logged in as Admin!');
+                window.location.href = 'admin-dashboard.html'; // Redirect to admin dashboard
+            } else {
+                alert('Invalid credentials. Please try again.');
+            }
+        }
+    </script>
 </body>
 </html>

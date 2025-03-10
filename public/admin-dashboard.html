@@ -7,8 +7,18 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .container {
-            max-width: 800px;
+            max-width: 1000px;
             margin-top: 50px;
+        }
+        .form-section {
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .hidden {
+            display: none;
         }
     </style>
 </head>
@@ -16,128 +26,509 @@
     <div class="container">
         <h1 class="text-center">Admin Dashboard</h1>
         <div class="mb-4">
-            <button class="btn btn-primary" onclick="showAddGameForm()">Add New Game</button>
+            <button class="btn btn-primary" onclick="showSection('add-game')">Add New Game</button>
+            <button class="btn btn-info" onclick="loadGames()">Refresh Games</button>
+            <button class="btn btn-success" onclick="showSection('user-progress')">User Progress</button>
             <button class="btn btn-danger" onclick="logout()">Logout</button>
         </div>
-        <div id="user-progress">
+
+        <!-- User Progress Section -->
+        <div id="user-progress" class="form-section hidden">
             <h3>User Progress</h3>
-            <ul id="user-progress-ul" class="list-group">
-                <li class="list-group-item">Total Users: <span id="total-users">0</span></li>
-                <li class="list-group-item">Total Games Played: <span id="total-games-played">0</span></li>
-                <li class="list-group-item">Total Scores: <span id="total-scores">0</span></li>
-            </ul>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Total Users</h5>
+                            <p class="card-text" id="total-users">0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Total Games Played</h5>
+                            <p class="card-text" id="total-games-played">0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Average Score</h5>
+                            <p class="card-text" id="average-score">0</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div id="game-list">
+
+        <!-- Game List Section -->
+        <div id="game-list" class="form-section">
             <h3>Manage Games</h3>
-            <ul id="games-ul" class="list-group">
-                <!-- Game list will be populated here -->
-            </ul>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Type</th>
+                            <th>Created</th>
+                            <th>Updated</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="games-table">
+                        <!-- Game list will be populated here -->
+                    </tbody>
+                </table>
+            </div>
         </div>
-        <div id="add-game-form" style="display: none;">
+
+        <!-- Add Game Form -->
+        <div id="add-game" class="form-section hidden">
             <h3>Add New Game</h3>
-            <input type="text" id="game-title" class="form-control" placeholder="Game Title" required>
-            <textarea id="game-description" class="form-control" placeholder="Game Description" required></textarea>
+            <div class="form-group">
+                <label for="game-title">Game Title</label>
+                <input type="text" id="game-title" class="form-control" placeholder="Game Title" required>
+            </div>
+            <div class="form-group">
+                <label for="game-type">Game Type</label>
+                <select id="game-type" class="form-control" onchange="showGameTypeForm()">
+                    <option value="">Select Game Type</option>
+                    <option value="4PicsOneWord">4 Pics 1 Word</option>
+                    <option value="Crossword">Crossword</option>
+                    <option value="MissingLetter">Guess the Missing Letter</option>
+                    <option value="PPEGame">PPE Game</option>
+                    <option value="QuizGame">Quiz Game</option>
+                    <option value="WordScrambler">Word Scrambler</option>
+                </select>
+            </div>
+
+            <!-- 4 Pics 1 Word Form -->
+            <div id="form-4PicsOneWord" class="game-type-form hidden">
+                <div class="form-group">
+                    <label>Images (URL)</label>
+                    <input type="text" class="form-control mb-2" id="pic1" placeholder="Image 1 URL">
+                    <input type="text" class="form-control mb-2" id="pic2" placeholder="Image 2 URL">
+                    <input type="text" class="form-control mb-2" id="pic3" placeholder="Image 3 URL">
+                    <input type="text" class="form-control mb-2" id="pic4" placeholder="Image 4 URL">
+                </div>
+                <div class="form-group">
+                    <label for="4pics-answer">Answer</label>
+                    <input type="text" id="4pics-answer" class="form-control" placeholder="Answer">
+                </div>
+                <div class="form-group">
+                    <label for="4pics-difficulty">Difficulty</label>
+                    <select id="4pics-difficulty" class="form-control">
+                        <option value="easy">Easy</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="hard">Hard</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Missing Letter Form -->
+            <div id="form-MissingLetter" class="game-type-form hidden">
+                <div class="form-group">
+                    <label for="missing-word">Word with Missing Letters (use _ for missing)</label>
+                    <input type="text" id="missing-word" class="form-control" placeholder="F_R_">
+                </div>
+                <div class="form-group">
+                    <label for="missing-answer">Complete Word</label>
+                    <input type="text" id="missing-answer" class="form-control" placeholder="FIRE">
+                </div>
+                <div class="form-group">
+                    <label for="missing-hint">Hint</label>
+                    <input type="text" id="missing-hint" class="form-control" placeholder="A rapid oxidation process that produces heat and light.">
+                </div>
+                <div class="form-group">
+                    <label for="missing-difficulty">Difficulty</label>
+                    <select id="missing-difficulty" class="form-control">
+                        <option value="easy">Easy</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="hard">Hard</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Quiz Game Form -->
+            <div id="form-QuizGame" class="game-type-form hidden">
+                <div class="form-group">
+                    <label for="quiz-question">Question</label>
+                    <input type="text" id="quiz-question" class="form-control" placeholder="What is the purpose of a fire extinguisher?">
+                </div>
+                <div class="form-group">
+                    <label>Options</label>
+                    <input type="text" class="form-control mb-2" id="quiz-option1" placeholder="Option 1">
+                    <input type="text" class="form-control mb-2" id="quiz-option2" placeholder="Option 2">
+                    <input type="text" class="form-control mb-2" id="quiz-option3" placeholder="Option 3">
+                    <input type="text" class="form-control mb-2" id="quiz-option4" placeholder="Option 4">
+                </div>
+                <div class="form-group">
+                    <label for="quiz-correct">Correct Answer (1-4)</label>
+                    <select id="quiz-correct" class="form-control">
+                        <option value="0">Option 1</option>
+                        <option value="1">Option 2</option>
+                        <option value="2">Option 3</option>
+                        <option value="3">Option 4</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="quiz-difficulty">Difficulty</label>
+                    <select id="quiz-difficulty" class="form-control">
+                        <option value="easy">Easy</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="hard">Hard</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Word Scrambler Form -->
+            <div id="form-WordScrambler" class="game-type-form hidden">
+                <div class="form-group">
+                    <label for="scrambled-word">Scrambled Word</label>
+                    <input type="text" id="scrambled-word" class="form-control" placeholder="IREF">
+                </div>
+                <div class="form-group">
+                    <label for="correct-word">Correct Word</label>
+                    <input type="text" id="correct-word" class="form-control" placeholder="FIRE">
+                </div>
+                <div class="form-group">
+                    <label for="scrambled-hint">Hint (optional)</label>
+                    <input type="text" id="scrambled-hint" class="form-control" placeholder="Produces heat and light">
+                </div>
+                <div class="form-group">
+                    <label for="scrambled-difficulty">Difficulty</label>
+                    <select id="scrambled-difficulty" class="form-control">
+                        <option value="easy">Easy</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="hard">Hard</option>
+                    </select>
+                </div>
+            </div>
+
             <button class="btn btn-success" onclick="addGame()">Add Game</button>
-            <button class="btn btn-secondary" onclick="hideAddGameForm()">Cancel</button>
+            <button class="btn btn-secondary" onclick="hideAllForms()">Cancel</button>
         </div>
-        <div id="edit-game-form" style="display: none;">
+
+        <!-- Edit Game Form - Similar to Add Game but with ID for updating -->
+        <div id="edit-game" class="form-section hidden">
             <h3>Edit Game</h3>
-            <input type="text" id="edit-game-title" class="form-control" placeholder="Game Title" required>
-            <textarea id="edit-game-description" class="form-control" placeholder="Game Description" required></textarea>
+            <input type="hidden" id="edit-game-id">
+            <div class="form-group">
+                <label for="edit-game-title">Game Title</label>
+                <input type="text" id="edit-game-title" class="form-control" placeholder="Game Title" required>
+            </div>
+            <div class="form-group">
+                <label for="edit-game-type">Game Type</label>
+                <input type="text" id="edit-game-type" class="form-control" readonly>
+            </div>
+
+            <!-- Game type specific edit forms would go here, similar to add form -->
+
             <button class="btn btn-warning" onclick="updateGame()">Update Game</button>
-            <button class="btn btn-secondary" onclick="hideEditGameForm()">Cancel</button>
+            <button class="btn btn-secondary" onclick="hideAllForms()">Cancel</button>
         </div>
     </div>
 
     <script>
-        const adminCredentials = { username: 'admin', password: 'password' }; // Example credentials
-        const games = [];
-        let editingIndex = -1;
-        let totalUsers = 0; // Placeholder for user count
-        let totalGamesPlayed = 0; // Placeholder for games played
-        let totalScores = 0; // Placeholder for total scores
+        // Global variables
+        let currentGameId = null;
 
-        function showAddGameForm() {
-            document.getElementById('add-game-form').style.display = 'block';
-            document.getElementById('edit-game-form').style.display = 'none';
-        }
+        // Event Listeners & Initial Load
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAdminAuth();
+            loadGames();
+            loadStats();
+        });
 
-        function hideAddGameForm() {
-            document.getElementById('add-game-form').style.display = 'none';
-        }
-
-        function showEditGameForm(index) {
-            editingIndex = index;
-            const game = games[index];
-            document.getElementById('edit-game-title').value = game.title;
-            document.getElementById('edit-game-description').value = game.description;
-            document.getElementById('edit-game-form').style.display = 'block';
-            document.getElementById('add-game-form').style.display = 'none';
-        }
-
-        function hideEditGameForm() {
-            document.getElementById('edit-game-form').style.display = 'none';
-        }
-
-        function addGame() {
-            const title = document.getElementById('game-title').value;
-            const description = document.getElementById('game-description').value;
-            games.push({ title, description });
-            totalGamesPlayed++; // Increment games played
-            updateUserProgress(); // Update user progress
-            updateGameList();
-            hideAddGameForm();
-            document.getElementById('game-title').value = '';
-            document.getElementById('game-description').value = '';
-            alert('Game added successfully!');
-        }
-
-        function updateGame() {
-            const title = document.getElementById('edit-game-title').value;
-            const description = document.getElementById('edit-game-description').value;
-            games[editingIndex] = { title, description };
-            updateGameList();
-            hideEditGameForm();
-            alert('Game updated successfully!');
-        }
-
-        function deleteGame(index) {
-            if (confirm('Are you sure you want to delete this game?')) {
-                games.splice(index, 1);
-                updateGameList();
-                alert('Game deleted successfully!');
+        // Authentication Functions
+        function checkAdminAuth() {
+            const adminUser = JSON.parse(localStorage.getItem('adminUser'));
+            if (!adminUser) {
+                alert('You must login as admin to access this page.');
+                window.location.href = 'landing.html';
+                return false;
             }
-        }
-
-        function updateGameList() {
-            const gamesUl = document.getElementById('games-ul');
-            gamesUl.innerHTML = '';
-            games.forEach((game, index) => {
-                const li = document.createElement('li');
-                li.className = 'list-group-item';
-                li.textContent = game.title;
-                li.onclick = () => showEditGameForm(index);
-                const deleteBtn = document.createElement('button');
-                deleteBtn.className = 'btn btn-danger btn-sm float-right';
-                deleteBtn.textContent = 'Delete';
-                deleteBtn.onclick = (e) => {
-                    e.stopPropagation();
-                    deleteGame(index);
-                };
-                li.appendChild(deleteBtn);
-                gamesUl.appendChild(li);
-            });
-        }
-
-        function updateUserProgress() {
-            document.getElementById('total-users').textContent = totalUsers;
-            document.getElementById('total-games-played').textContent = totalGamesPlayed;
-            document.getElementById('total-scores').textContent = totalScores;
+            console.log('Admin authentication successful');
+            return true;
         }
 
         function logout() {
+            localStorage.removeItem('adminUser');
             alert('Logged out successfully!');
-            window.location.href = 'landing.html'; // Redirect to landing page
+            window.location.href = 'landing.html';
+        }
+
+        // UI Helper Functions
+        function showSection(sectionId) {
+            document.querySelectorAll('.form-section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            document.getElementById(sectionId).classList.remove('hidden');
+        }
+
+        function hideAllForms() {
+            document.querySelectorAll('.form-section').forEach(section => {
+                if (section.id !== 'game-list') {
+                    section.classList.add('hidden');
+                }
+            });
+
+            document.querySelectorAll('.game-type-form').forEach(form => {
+                form.classList.add('hidden');
+            });
+        }
+
+        function showGameTypeForm() {
+            const gameType = document.getElementById('game-type').value;
+
+            // Hide all game type forms
+            document.querySelectorAll('.game-type-form').forEach(form => {
+                form.classList.add('hidden');
+            });
+
+            // Show the selected game type form
+            if (gameType) {
+                const formId = 'form-' + gameType;
+                document.getElementById(formId)?.classList.remove('hidden');
+            }
+        }
+
+        // API Functions
+        async function loadGames() {
+            try {
+                const response = await fetch('/api/games');
+                const games = await response.json();
+
+                const gamesTable = document.getElementById('games-table');
+                gamesTable.innerHTML = '';
+
+                games.forEach(game => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${game.title}</td>
+                        <td>${game.type}</td>
+                        <td>${new Date(game.createdAt).toLocaleString()}</td>
+                        <td>${new Date(game.updatedAt).toLocaleString()}</td>
+                        <td>
+                            <button class="btn btn-sm btn-info" onclick="editGame('${game._id}')">Edit</button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteGame('${game._id}')">Delete</button>
+                        </td>
+                    `;
+                    gamesTable.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error loading games:', error);
+                alert('Error loading games. Please try again.');
+            }
+        }
+
+        async function loadStats() {
+            try {
+                // In a real app, these would come from API endpoints
+                // For now, using placeholder data
+                document.getElementById('total-users').textContent = 15;
+                document.getElementById('total-games-played').textContent = 42;
+                document.getElementById('average-score').textContent = 78;
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        async function addGame() {
+            try {
+                const title = document.getElementById('game-title').value;
+                const type = document.getElementById('game-type').value;
+
+                if (!title || !type) {
+                    alert('Please fill in all required fields');
+                    return;
+                }
+
+                // Create base game
+                const gameData = {
+                    title,
+                    type
+                };
+
+                const gameResponse = await fetch('/api/games', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(gameData)
+                });
+
+                if (!gameResponse.ok) {
+                    throw new Error('Failed to create game');
+                }
+
+                const newGame = await gameResponse.json();
+
+                // Now add game-specific content
+                let contentEndpoint = '/api/';
+                let contentData = {};
+
+                switch(type) {
+                    case '4PicsOneWord':
+                        contentEndpoint += 'fourpics';
+                        contentData = {
+                            gameId: newGame._id,
+                            images: [
+                                document.getElementById('pic1').value,
+                                document.getElementById('pic2').value,
+                                document.getElementById('pic3').value,
+                                document.getElementById('pic4').value
+                            ],
+                            answer: document.getElementById('4pics-answer').value,
+                            difficulty: document.getElementById('4pics-difficulty').value
+                        };
+                        break;
+                    case 'MissingLetter':
+                        contentEndpoint += 'missingletter';
+                        contentData = {
+                            gameId: newGame._id,
+                            word: document.getElementById('missing-word').value,
+                            answer: document.getElementById('missing-answer').value,
+                            hint: document.getElementById('missing-hint').value,
+                            difficulty: document.getElementById('missing-difficulty').value
+                        };
+                        break;
+                    case 'QuizGame':
+                        contentEndpoint += 'quiz';
+                        contentData = {
+                            gameId: newGame._id,
+                            question: document.getElementById('quiz-question').value,
+                            options: [
+                                document.getElementById('quiz-option1').value,
+                                document.getElementById('quiz-option2').value,
+                                document.getElementById('quiz-option3').value,
+                                document.getElementById('quiz-option4').value
+                            ],
+                            correctAnswer: parseInt(document.getElementById('quiz-correct').value),
+                            difficulty: document.getElementById('quiz-difficulty').value
+                        };
+                        break;
+                    case 'WordScrambler':
+                        contentEndpoint += 'wordscrambler';
+                        contentData = {
+                            gameId: newGame._id,
+                            scrambledWord: document.getElementById('scrambled-word').value,
+                            correctWord: document.getElementById('correct-word').value,
+                            hint: document.getElementById('scrambled-hint').value,
+                            difficulty: document.getElementById('scrambled-difficulty').value
+                        };
+                        break;
+                    // Add cases for other game types
+                }
+
+                // Only make the content API call if we have an endpoint
+                if (contentEndpoint !== '/api/') {
+                    const contentResponse = await fetch(contentEndpoint, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(contentData)
+                    });
+
+                    if (!contentResponse.ok) {
+                        // If content creation fails, delete the game to avoid orphaned records
+                        await fetch(`/api/games/${newGame._id}`, { method: 'DELETE' });
+                        throw new Error('Failed to create game content');
+                    }
+                }
+
+                alert('Game added successfully!');
+                hideAllForms();
+                loadGames();
+
+                // Clear form
+                document.getElementById('game-title').value = '';
+                document.getElementById('game-type').value = '';
+
+            } catch (error) {
+                console.error('Error adding game:', error);
+                alert('Error adding game. Please try again.');
+            }
+        }
+
+        async function editGame(gameId) {
+            try {
+                const response = await fetch(`/api/games/${gameId}`);
+                const data = await response.json();
+                const game = data.game;
+
+                currentGameId = game._id;
+                document.getElementById('edit-game-id').value = game._id;
+                document.getElementById('edit-game-title').value = game.title;
+                document.getElementById('edit-game-type').value = game.type;
+
+                // Here we would populate game-specific form fields based on content
+
+                showSection('edit-game');
+            } catch (error) {
+                console.error('Error loading game details:', error);
+                alert('Error loading game details. Please try again.');
+            }
+        }
+
+        async function updateGame() {
+            try {
+                const gameId = document.getElementById('edit-game-id').value;
+                const title = document.getElementById('edit-game-title').value;
+
+                if (!title) {
+                    alert('Please fill in all required fields');
+                    return;
+                }
+
+                const gameData = {
+                    title
+                };
+
+                const response = await fetch(`/api/games/${gameId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(gameData)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to update game');
+                }
+
+                // Here we would update game-specific content 
+
+                alert('Game updated successfully!');
+                hideAllForms();
+                loadGames();
+            } catch (error) {
+                console.error('Error updating game:', error);
+                alert('Error updating game. Please try again.');
+            }
+        }
+
+        async function deleteGame(gameId) {
+            if (confirm('Are you sure you want to delete this game? This cannot be undone.')) {
+                try {
+                    const response = await fetch(`/api/games/${gameId}`, {
+                        method: 'DELETE'
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to delete game');
+                    }
+
+                    alert('Game deleted successfully!');
+                    loadGames();
+                } catch (error) {
+                    console.error('Error deleting game:', error);
+                    alert('Error deleting game. Please try again.');
+                }
+            }
         }
     </script>
 </body>

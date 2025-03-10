@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guess the Missing Letter - Firefighter Equipment</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- External CSS -->
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <div class="container-fluid game-container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <h1 class="text-center text-2xl font-bold">Guess the Missing Letter - Firefighter Equipment</h1>
+                <p class="text-center">Fill in the missing letters to complete the firefighter equipment terms.</p>
+                <div id="game" class="mb-4"></div>
+                <div class="score text-lg" id="score">Score: 0</div>
+            </div>
+        </div>
+    </div>
+    <div id="successModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeModal">&times;</span>
+            <p id="modalMessage">Congratulations! You got it right!</p>
+        </div>
+    </div>
+    <script>
+        const missingLetterGame = {
+            score: 0,
+            levels: {
+                easy: [
+                    { word: 'F_R_', answer: 'FIRE', hint: 'A rapid oxidation process that produces heat and light.' },
+                    { word: 'S_AF_T_', answer: 'SAFETY', hint: 'The condition of being protected from or unlikely to cause danger.' },
+                    { word: 'H_L_M_T', answer: 'HELMET', hint: 'Protective gear worn on the head.' },
+                    { word: 'B_O_T_', answer: 'BOOTS', hint: 'Footwear used for protection.' },
+                    { word: 'A_P_A_T', answer: 'APART', hint: 'To be separated or divided.' }
+                ],
+                medium: [
+                    { word: 'E_X_T_N_UI_H_R', answer: 'EXTINGUISHER', hint: 'Device used to put out small fires.' },
+                    { word: 'C_RB_NMONOXIDE', answer: 'CARBONMONOXIDE', hint: 'A colorless, odorless gas that can be harmful when inhaled.' },
+                    { word: 'F_R_E_FIGHTER', answer: 'FIREFIGHTER', hint: 'A person who fights fires.' },
+                    { word: 'H_OSE', answer: 'HOSE', hint: 'A flexible tube for conveying water.' },
+                    { word: 'A_L_R_T', answer: 'ALERT', hint: 'A warning signal.' }
+                ],
+                hard: [
+                    { word: 'E_V_C__T_', answer: 'EVACUATE', hint: 'To remove someone from a dangerous place.' },
+                    { word: 'P_L_N', answer: 'PLAN', hint: 'A detailed proposal for doing or achieving something.' },
+                    { word: 'D_ETECTOR', answer: 'DETECTOR', hint: 'A device used to sense smoke or heat.' },
+                    { word: 'R_SCUE', answer: 'RESCUE', hint: 'To save someone from a dangerous situation.' },
+                    { word: 'E_X_T', answer: 'EXIT', hint: 'A way out of a building or area.' },
+                    { word: 'S_AF_TY', answer: 'SAFETY', hint: 'The condition of being protected from or unlikely to cause danger.' },
+                    { word: 'C_O_N_T_A_T', answer: 'CONTACT', hint: 'To communicate with someone.' }
+                ]
+            },
+            startGame: function(level) {
+                const selectedLevel = this.levels[level];
+                const gameDiv = document.getElementById('game');
+                gameDiv.innerHTML = '';
+                if (selectedLevel) {
+                    selectedLevel.forEach((item) => {
+                        gameDiv.innerHTML += `<div class='word'>Word: ${item.word} - Hint: ${item.hint}<br><input class='input form-control' type='text' placeholder='Fill in the missing letter' data-answer='${item.answer}' /><button onclick='checkAnswer(this)' class='btn btn-primary'>Submit</button></div>`;
+                    });
+                } else {
+                    gameDiv.innerHTML = 'Invalid level selected.';
+                }
+            }
+        };
+
+        function checkAnswer(button) {
+            const input = button.previousElementSibling;
+            const answer = input.getAttribute('data-answer');
+            if (input.value.toUpperCase() === answer) {
+                missingLetterGame.score += 1;
+                document.getElementById('score').innerText = `Score: ${missingLetterGame.score}`;
+                input.value = '';
+                showSuccessModal();
+            } else {
+                alert('Incorrect, try again!');
+            }
+        }
+
+        function showSuccessModal() {
+            const modal = document.getElementById('successModal');
+            const modalMessage = document.getElementById('modalMessage');
+            modalMessage.innerText = 'Congratulations! You got it right!';
+            modal.style.display = 'block';
+        }
+
+        document.getElementById('closeModal').onclick = function() {
+            document.getElementById('successModal').style.display = 'none';
+        };
+
+        missingLetterGame.startGame('easy'); // Start the game at easy level
+    </script>
+</body>
+</html>
