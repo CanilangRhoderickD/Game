@@ -1,0 +1,689 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard - APULA Fire Safety</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
+    <style>
+        .dashboard-container {
+            padding: 40px 0;
+        }
+        
+        .dashboard-card {
+            border: none;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s;
+            margin-bottom: 20px;
+            height: 100%;
+        }
+        
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .progress-card {
+            border-left: 4px solid #ff4500;
+        }
+        
+        .achievement-card {
+            border-left: 4px solid #28a745;
+        }
+        
+        .recommendation-card {
+            border-left: 4px solid #0066cc;
+        }
+        
+        .stat-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background-color: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 20px;
+            border: 5px solid #ff4500;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ff4500;
+            line-height: 1;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+        
+        .progress-bar-custom {
+            height: 8px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        
+        .badge-custom {
+            font-size: 0.8rem;
+            padding: 5px 10px;
+            border-radius: 20px;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+        
+        .game-row {
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .game-row:nth-child(odd) {
+            background-color: #f8f9fa;
+        }
+        
+        .game-icon {
+            font-size: 1.5rem;
+            margin-right: 10px;
+        }
+        
+        .achievement-badge {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .badge-icon {
+            font-size: 2rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            border: 2px solid #28a745;
+        }
+        
+        .streak-days {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #0066cc;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">APULA</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="landing.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="games.html">Games</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/api/users/logout">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dashboard Content -->
+    <div class="container dashboard-container">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="mb-4">Your Fire Safety Dashboard</h1>
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle mr-2"></i> Welcome back, <span id="user-name">User</span>! Continue your fire safety education journey.
+                </div>
+            </div>
+        </div>
+        
+        <!-- Stats Row -->
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card dashboard-card">
+                    <div class="card-body text-center">
+                        <div class="stat-circle">
+                            <div class="stat-number" id="total-points">0</div>
+                            <div class="stat-label">POINTS</div>
+                        </div>
+                        <h5 class="card-title">Total Score</h5>
+                        <p class="card-text">Your accumulated points across all games.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card dashboard-card">
+                    <div class="card-body text-center">
+                        <div class="stat-circle" style="border-color: #28a745;">
+                            <div class="stat-number" id="games-completed">0</div>
+                            <div class="stat-label">COMPLETED</div>
+                        </div>
+                        <h5 class="card-title">Games Completed</h5>
+                        <p class="card-text">Number of games you've successfully finished.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card dashboard-card">
+                    <div class="card-body text-center">
+                        <div class="stat-circle" style="border-color: #0066cc;">
+                            <div class="streak-days" id="login-streak">0</div>
+                            <div class="stat-label">DAYS</div>
+                        </div>
+                        <h5 class="card-title">Login Streak</h5>
+                        <p class="card-text">Your consecutive days of learning.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Progress & Games Row -->
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card dashboard-card progress-card">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="fas fa-chart-line mr-2"></i> Your Progress</h5>
+                        
+                        <h6 class="mt-4">Overall Progress</h6>
+                        <div class="progress progress-bar-custom">
+                            <div class="progress-bar bg-success" id="overall-progress" role="progressbar" style="width: 0%"></div>
+                        </div>
+                        
+                        <h6 class="mt-4">Games Progress</h6>
+                        <div id="games-progress-container">
+                            <!-- Games progress will be inserted here by JS -->
+                        </div>
+                        
+                        <h6 class="mt-4">Recent Activity</h6>
+                        <div id="recent-activity">
+                            <!-- Recent activity will be inserted here by JS -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card dashboard-card recommendation-card mt-4">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="fas fa-lightbulb mr-2"></i> Recommended For You</h5>
+                        <p>Based on your progress, we recommend these games to improve your fire safety knowledge:</p>
+                        
+                        <div id="recommendations-container">
+                            <!-- Recommendations will be inserted here by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card dashboard-card achievement-card">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="fas fa-trophy mr-2"></i> Achievements</h5>
+                        <p>Badges and achievements you've earned:</p>
+                        
+                        <div id="achievements-container">
+                            <!-- Achievements will be inserted here by JS -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card dashboard-card mt-4">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="fas fa-fire-extinguisher mr-2"></i> Fire Safety Tips</h5>
+                        <div class="tip-container" id="safety-tip">
+                            <p><em>"Test smoke alarms monthly and replace batteries at least once a year."</em></p>
+                        </div>
+                        <button class="btn btn-outline-primary btn-sm" onclick="loadNewTip()">Next Tip</button>
+                    </div>
+                </div>
+                
+                <div class="card dashboard-card mt-4">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="fas fa-cog mr-2"></i> Account Settings</h5>
+                        <div class="list-group">
+                            <a href="#" class="list-group-item list-group-item-action" onclick="resetProgress()">
+                                Reset Progress
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action">
+                                Change Password
+                            </a>
+                            <a href="/api/users/logout" class="list-group-item list-group-item-action text-danger">
+                                Log Out
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>APULA Fire Safety Education</h5>
+                    <p>Educating communities through interactive learning</p>
+                </div>
+                <div class="col-md-6 text-md-right">
+                    <p>© 2023 APULA. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/game-progress.js"></script>
+    <script src="/js/accessibility.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check authentication
+            Auth.requireAuth().then(authenticated => {
+                if (authenticated) {
+                    initializeDashboard();
+                }
+            });
+            
+            // Initialize dashboard components
+            function initializeDashboard() {
+                // Get user info
+                Auth.getCurrentUser().then(user => {
+                    if (user) {
+                        document.getElementById('user-name').textContent = user.username;
+                    }
+                });
+                
+                // Load game progress
+                if (window.gameTracker) {
+                    const progress = window.gameTracker.progress;
+                    
+                    // Update stats
+                    document.getElementById('total-points').textContent = progress.totalScore || 0;
+                    document.getElementById('games-completed').textContent = progress.gamesCompleted || 0;
+                    
+                    // Calculate and update overall progress
+                    const overallProgress = Math.min(Math.round((progress.gamesCompleted / 6) * 100), 100);
+                    document.getElementById('overall-progress').style.width = overallProgress + '%';
+                    document.getElementById('overall-progress').setAttribute('aria-valuenow', overallProgress);
+                    
+                    // Update games progress
+                    updateGamesProgress(progress);
+                    
+                    // Update achievements
+                    updateAchievements(progress);
+                    
+                    // Generate recommendations
+                    generateRecommendations(progress);
+                    
+                    // Update login streak
+                    calculateLoginStreak();
+                    
+                    // Generate recent activity
+                    generateRecentActivity(progress);
+                }
+                
+                // Load first safety tip
+                loadNewTip();
+            }
+            
+            // Update games progress section
+            function updateGamesProgress(progress) {
+                const container = document.getElementById('games-progress-container');
+                if (!container) return;
+                
+                container.innerHTML = '';
+                
+                const gameTypes = {
+                    '4PicsOneWord': { name: '4 Pics 1 Word', icon: 'fas fa-images' },
+                    'Crossword': { name: 'Crossword', icon: 'fas fa-th' },
+                    'MissingLetter': { name: 'Missing Letter', icon: 'fas fa-font' },
+                    'PPEGame': { name: 'PPE Game', icon: 'fas fa-hard-hat' },
+                    'QuizGame': { name: 'Quiz Game', icon: 'fas fa-question-circle' },
+                    'WordScrambler': { name: 'Word Scramble', icon: 'fas fa-random' }
+                };
+                
+                // Create entries for all games, even if not started
+                Object.entries(gameTypes).forEach(([type, details]) => {
+                    const gameProgress = progress.games && progress.games[type] ? progress.games[type] : null;
+                    
+                    const gameRow = document.createElement('div');
+                    gameRow.className = 'game-row';
+                    
+                    const gameInfo = document.createElement('div');
+                    gameInfo.className = 'd-flex align-items-center';
+                    gameInfo.innerHTML = `
+                        <i class="${details.icon} game-icon"></i>
+                        <div>
+                            <div class="font-weight-bold">${details.name}</div>
+                            <div class="small text-muted">
+                                ${gameProgress ? `Played ${gameProgress.timesPlayed} times` : 'Not started yet'}
+                            </div>
+                        </div>
+                    `;
+                    
+                    const gameStatus = document.createElement('div');
+                    if (gameProgress && gameProgress.completed) {
+                        gameStatus.innerHTML = `
+                            <span class="badge badge-success">Completed</span>
+                            <div class="small text-muted">Score: ${gameProgress.highScore}</div>
+                        `;
+                    } else if (gameProgress) {
+                        gameStatus.innerHTML = `
+                            <span class="badge badge-warning">In Progress</span>
+                            <div class="small text-muted">Score: ${gameProgress.highScore}</div>
+                        `;
+                    } else {
+                        gameStatus.innerHTML = `
+                            <span class="badge badge-secondary">Not Started</span>
+                            <a href="${getGameUrl(type)}" class="btn btn-sm btn-outline-primary ml-2">Start</a>
+                        `;
+                    }
+                    
+                    gameRow.appendChild(gameInfo);
+                    gameRow.appendChild(gameStatus);
+                    container.appendChild(gameRow);
+                });
+            }
+            
+            // Update achievements section
+            function updateAchievements(progress) {
+                const container = document.getElementById('achievements-container');
+                if (!container) return;
+                
+                container.innerHTML = '';
+                
+                const achievements = [
+                    { id: 'first_game', title: 'First Steps', icon: '🔥', description: 'Complete your first game', condition: () => progress.gamesCompleted >= 1 },
+                    { id: 'half_way', title: 'Half Way There', icon: '🚒', description: 'Complete 3 different games', condition: () => progress.gamesCompleted >= 3 },
+                    { id: 'master', title: 'Safety Expert', icon: '👨‍🚒', description: 'Complete all games', condition: () => progress.gamesCompleted >= 6 },
+                    { id: 'high_scorer', title: 'High Scorer', icon: '🏆', description: 'Earn 1000+ total points', condition: () => progress.totalScore >= 1000 }
+                ];
+                
+                // Check if any achievements are earned
+                let earnedCount = 0;
+                
+                achievements.forEach(achievement => {
+                    if (achievement.condition()) {
+                        earnedCount++;
+                        
+                        const badge = document.createElement('div');
+                        badge.className = 'achievement-badge';
+                        badge.innerHTML = `
+                            <div class="badge-icon" title="${achievement.description}">${achievement.icon}</div>
+                            <h6>${achievement.title}</h6>
+                            <p class="small text-muted">${achievement.description}</p>
+                        `;
+                        container.appendChild(badge);
+                    }
+                });
+                
+                // Show message if no achievements earned yet
+                if (earnedCount === 0) {
+                    container.innerHTML = `
+                        <div class="text-center text-muted py-3">
+                            <i class="fas fa-trophy fa-2x mb-2"></i>
+                            <p>Play games to earn achievements!</p>
+                        </div>
+                    `;
+                }
+            }
+            
+            // Generate game recommendations based on progress
+            function generateRecommendations(progress) {
+                const container = document.getElementById('recommendations-container');
+                if (!container) return;
+                
+                container.innerHTML = '';
+                
+                const gameTypes = {
+                    '4PicsOneWord': { name: '4 Pics 1 Word', icon: 'fas fa-images', url: '4pics-game.html' },
+                    'Crossword': { name: 'Crossword', icon: 'fas fa-th', url: 'crossword.html' },
+                    'MissingLetter': { name: 'Missing Letter', icon: 'fas fa-font', url: 'guessthemissingletter.html' },
+                    'PPEGame': { name: 'PPE Game', icon: 'fas fa-hard-hat', url: 'ppe-game.html' },
+                    'QuizGame': { name: 'Quiz Game', icon: 'fas fa-question-circle', url: 'quiz-game.html' },
+                    'WordScrambler': { name: 'Word Scramble', icon: 'fas fa-random', url: 'word-scramble.html' }
+                };
+                
+                // Check which games haven't been completed
+                const notCompletedGames = [];
+                const notStartedGames = [];
+                
+                Object.entries(gameTypes).forEach(([type, details]) => {
+                    const game = progress.games && progress.games[type];
+                    
+                    if (!game) {
+                        notStartedGames.push({ type, ...details });
+                    } else if (!game.completed) {
+                        notCompletedGames.push({ type, ...details, score: game.highScore });
+                    }
+                });
+                
+                // Prioritize games in progress, then not started
+                const recommendations = [...notCompletedGames, ...notStartedGames].slice(0, 3);
+                
+                if (recommendations.length > 0) {
+                    const list = document.createElement('div');
+                    list.className = 'list-group';
+                    
+                    recommendations.forEach(game => {
+                        list.innerHTML += `
+                            <a href="${game.url}" class="list-group-item list-group-item-action">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <i class="${game.icon} mr-2"></i>
+                                        ${game.name}
+                                    </div>
+                                    <span class="badge badge-primary badge-pill">Play</span>
+                                </div>
+                            </a>
+                        `;
+                    });
+                    
+                    container.appendChild(list);
+                } else {
+                    container.innerHTML = `
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle mr-2"></i>
+                            Congratulations! You've completed all games.
+                            <a href="games.html" class="alert-link">Play again</a> to improve your scores!
+                        </div>
+                    `;
+                }
+            }
+            
+            // Calculate login streak
+            function calculateLoginStreak() {
+                let streak = localStorage.getItem('login_streak') || 0;
+                const lastLogin = localStorage.getItem('last_login_date');
+                const today = new Date().toDateString();
+                
+                if (lastLogin) {
+                    const yesterday = new Date();
+                    yesterday.setDate(yesterday.getDate() - 1);
+                    const yesterdayStr = yesterday.toDateString();
+                    
+                    if (lastLogin === today) {
+                        // Already logged in today, do nothing
+                    } else if (lastLogin === yesterdayStr) {
+                        // Logged in yesterday, increment streak
+                        streak++;
+                        localStorage.setItem('login_streak', streak);
+                    } else {
+                        // Missed a day, reset streak
+                        streak = 1;
+                        localStorage.setItem('login_streak', streak);
+                    }
+                } else {
+                    // First login
+                    streak = 1;
+                    localStorage.setItem('login_streak', streak);
+                }
+                
+                // Update last login date
+                localStorage.setItem('last_login_date', today);
+                
+                // Update UI
+                document.getElementById('login-streak').textContent = streak;
+            }
+            
+            // Generate recent activity
+            function generateRecentActivity(progress) {
+                const container = document.getElementById('recent-activity');
+                if (!container) return;
+                
+                container.innerHTML = '';
+                
+                // Get array of games with last played date
+                const recentGames = [];
+                if (progress.games) {
+                    Object.entries(progress.games).forEach(([type, game]) => {
+                        if (game.lastPlayed) {
+                            recentGames.push({
+                                type,
+                                name: getGameName(type),
+                                lastPlayed: new Date(game.lastPlayed),
+                                score: game.highScore
+                            });
+                        }
+                    });
+                }
+                
+                // Sort by recent first
+                recentGames.sort((a, b) => b.lastPlayed - a.lastPlayed);
+                
+                if (recentGames.length > 0) {
+                    const list = document.createElement('ul');
+                    list.className = 'list-group';
+                    
+                    recentGames.slice(0, 3).forEach(game => {
+                        const formattedDate = formatDate(game.lastPlayed);
+                        
+                        list.innerHTML += `
+                            <li class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        Played <strong>${game.name}</strong>
+                                        <div class="small text-muted">${formattedDate}</div>
+                                    </div>
+                                    <span class="badge badge-info">Score: ${game.score}</span>
+                                </div>
+                            </li>
+                        `;
+                    });
+                    
+                    container.appendChild(list);
+                } else {
+                    container.innerHTML = `
+                        <div class="text-center text-muted py-3">
+                            <p>No recent activity. Start playing games!</p>
+                            <a href="games.html" class="btn btn-sm btn-primary">Go to Games</a>
+                        </div>
+                    `;
+                }
+            }
+            
+            // Format date helper
+            function formatDate(date) {
+                const now = new Date();
+                const diffTime = Math.abs(now - date);
+                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                
+                if (diffDays === 0) {
+                    return 'Today';
+                } else if (diffDays === 1) {
+                    return 'Yesterday';
+                } else if (diffDays < 7) {
+                    return `${diffDays} days ago`;
+                } else {
+                    return date.toLocaleDateString();
+                }
+            }
+            
+            // Get game name helper
+            function getGameName(type) {
+                const names = {
+                    '4PicsOneWord': '4 Pics 1 Word',
+                    'Crossword': 'Crossword',
+                    'MissingLetter': 'Missing Letter',
+                    'PPEGame': 'PPE Game',
+                    'QuizGame': 'Quiz Game',
+                    'WordScrambler': 'Word Scramble'
+                };
+                
+                return names[type] || type;
+            }
+            
+            // Get game URL helper
+            function getGameUrl(type) {
+                const urls = {
+                    '4PicsOneWord': '4pics-game.html',
+                    'Crossword': 'crossword.html',
+                    'MissingLetter': 'guessthemissingletter.html',
+                    'PPEGame': 'ppe-game.html',
+                    'QuizGame': 'quiz-game.html',
+                    'WordScrambler': 'word-scramble.html'
+                };
+                
+                return urls[type] || 'games.html';
+            }
+        });
+        
+        // Safety tips
+        const safetyTips = [
+            "Test smoke alarms monthly and replace batteries at least once a year.",
+            "Create and practice a fire escape plan with your family.",
+            "Never leave cooking unattended - it's the leading cause of home fires.",
+            "Keep flammable items at least three feet away from heating equipment.",
+            "Teach children about fire safety and the dangers of playing with matches and lighters.",
+            "Install smoke alarms on every level of your home, inside bedrooms and outside sleeping areas.",
+            "If a fire occurs, get out and stay out. Never go back inside for people or pets.",
+            "If your clothes catch fire, stop, drop and roll until the fire is extinguished.",
+            "Keep fire extinguishers in key areas of your home, like the kitchen and garage.",
+            "Have your heating system serviced annually by a professional.",
+            "Never use the oven to heat your home - it's a fire hazard.",
+            "Sleep with your door closed to slow the spread of fire and smoke.",
+            "Develop a home fire drill and practice it at least twice a year.",
+            "Make sure everyone in your home knows how to call emergency services.",
+            "If you smell gas, leave immediately and call the gas company from outside."
+        ];
+        
+        function loadNewTip() {
+            const tipContainer = document.getElementById('safety-tip');
+            const randomIndex = Math.floor(Math.random() * safetyTips.length);
+            tipContainer.innerHTML = `<p><em>"${safetyTips[randomIndex]}"</em></p>`;
+        }
+        
+        function resetProgress() {
+            if (confirm('Are you sure you want to reset your progress? This cannot be undone.')) {
+                if (window.gameTracker) {
+                    window.gameTracker.resetProgress();
+                    alert('Progress has been reset.');
+                    window.location.reload();
+                }
+            }
+        }
+    </script>
+</body>
+</html>

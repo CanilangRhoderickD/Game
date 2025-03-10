@@ -117,3 +117,245 @@
     font-size: 2rem;
   }
 }
+/**
+ * Shared game styles for APULA Fire Safety Games
+ */
+
+/* Game Container Styles */
+.game-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+  min-height: 70vh;
+}
+
+.game-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.game-description {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #666;
+}
+
+.score-display {
+  background-color: #f8f9fa;
+  padding: 10px 15px;
+  border-radius: 5px;
+  text-align: center;
+  font-weight: 700;
+  margin-bottom: 20px;
+  border-left: 4px solid #ff4500;
+}
+
+/* Button Styles */
+.btn-game {
+  background-color: #ff4500;
+  border-color: #ff4500;
+  color: white;
+  font-weight: 600;
+  padding: 10px 25px;
+  transition: all 0.3s;
+}
+
+.btn-game:hover, .btn-game:focus {
+  background-color: #e03d00;
+  border-color: #e03d00;
+  box-shadow: 0 0 0 0.2rem rgba(255, 69, 0, 0.25);
+  color: white;
+}
+
+.level-selector {
+  padding: 10px 15px;
+  border-radius: 5px;
+  border: 2px solid #0066cc;
+  background-color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Card Styles */
+.game-card {
+  border: none;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s;
+  margin-bottom: 20px;
+  height: 100%;
+}
+
+.game-card:hover {
+  transform: translateY(-5px);
+}
+
+/* Interactive Elements */
+.game-item {
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.game-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Feedback Styles */
+.feedback-correct {
+  color: #28a745;
+  font-weight: bold;
+  animation: pulse 1s;
+}
+
+.feedback-incorrect {
+  color: #dc3545;
+  font-weight: bold;
+  animation: shake 0.5s;
+}
+
+/* Timer Styles */
+.timer-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.timer-icon {
+  font-size: 1.5rem;
+  color: #0066cc;
+  margin-right: 10px;
+}
+
+.timer-display {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #0066cc;
+}
+
+.progress-bar {
+  height: 10px;
+  background-color: #e9ecef;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: #ff4500;
+  width: 0%;
+  transition: width 1s linear;
+}
+
+/* Difficulty Badges */
+.level-badge {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.easy-badge {
+  background-color: #e3fcef;
+  color: #0bbd5a;
+}
+
+.medium-badge {
+  background-color: #fff8e1;
+  color: #ffa000;
+}
+
+.hard-badge {
+  background-color: #ffebee;
+  color: #f44336;
+}
+
+/* Animations */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-5px); }
+  40%, 80% { transform: translateX(5px); }
+}
+
+/* Hint Styles */
+.hint-container {
+  background-color: #f0f8ff;
+  padding: 15px;
+  border-left: 4px solid #0066cc;
+  margin: 20px 0;
+  border-radius: 5px;
+  transition: opacity 0.3s;
+}
+
+/* Responsive Font Sizes */
+@media (max-width: 768px) {
+  .game-title {
+    font-size: 2rem;
+  }
+  
+  .score-display,
+  .timer-display {
+    font-size: 1rem;
+  }
+}
+
+/* Accessibility - High Contrast Mode */
+body.high-contrast .game-title {
+  color: white;
+}
+
+body.high-contrast .game-description,
+body.high-contrast .hint-container,
+body.high-contrast .score-display {
+  color: white;
+  background-color: black;
+  border-color: white;
+}
+
+body.high-contrast .btn-game {
+  background-color: white;
+  color: black;
+  border: 2px solid white;
+}
+
+body.high-contrast .level-selector {
+  background-color: black;
+  color: white;
+  border: 2px solid white;
+}
+
+/* Accessibility - Large Text Mode */
+body.large-text .game-title {
+  font-size: 3rem;
+}
+
+body.large-text .game-description {
+  font-size: 1.2rem;
+}
+
+body.large-text .btn,
+body.large-text .level-selector {
+  font-size: 1.2rem;
+  padding: 12px 30px;
+}
+
+/* Accessibility - Reduced Motion */
+body.reduced-motion .game-item:hover,
+body.reduced-motion .game-card:hover {
+  transform: none;
+}
+
+body.reduced-motion .feedback-correct,
+body.reduced-motion .feedback-incorrect {
+  animation: none;
+}

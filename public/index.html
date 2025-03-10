@@ -1,309 +1,40 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>APULA - Fire Prevention Games</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
-    <link href="/css/game-styles.css" rel="stylesheet">
+    <title>APULA - Loading</title>
     <style>
-        .dashboard-container {
-            padding: 40px 0;
-        }
-        .header-section {
-            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
-                        url('https://images.unsplash.com/photo-1507835661088-ac1e84fe645f');
-            background-size: cover;
-            background-position: center;
-            color: white;
-            padding: 60px 0;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .game-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 25px;
-        }
-        .game-item {
-            background-color: #fff;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 10px 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        .game-item:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
-        }
-        .game-item-header {
-            height: 180px;
-            background-size: cover;
-            background-position: center;
-            position: relative;
-        }
-        .game-item-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+        body {
+            font-family: 'Arial', sans-serif;
             display: flex;
-            align-items: flex-end;
-            padding: 15px;
-        }
-        .game-item-title {
-            color: white;
-            font-weight: 700;
-            margin: 0;
-        }
-        .game-item-content {
-            padding: 20px;
-        }
-        .game-item-description {
-            margin-bottom: 20px;
-            color: #666;
-        }
-        .game-item-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .difficulty {
-            display: inline-block;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        .difficulty-easy {
-            background-color: #e3fcef;
-            color: #0bbd5a;
-        }
-        .difficulty-medium {
-            background-color: #fff8e1;
-            color: #ffa000;
-        }
-        .difficulty-hard {
-            background-color: #ffebee;
-            color: #f44336;
-        }
-        .progress-section {
-            background-color: #f8f9fa;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 30px;
-        }
-        .progress-stats {
-            display: flex;
-            justify-content: space-around;
-            margin-bottom: 15px;
-        }
-        .progress-stats div {
-            text-align: center;
-            font-weight: 600;
-        }
-        .achievement-badges {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
             justify-content: center;
-        }
-        .achievement-badge {
-            display: flex;
-            flex-direction: column;
             align-items: center;
-            width: 80px;
+            height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
         }
-        .badge-icon {
-            font-size: 30px;
-            margin-bottom: 5px;
+        .loader {
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
         }
-        .badge-title {
-            font-size: 12px;
-            text-align: center;
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="#">APULA</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="landing.html">Home</a>
-                    </li>
-                    <li class="nav-item active">
-                        <a class="nav-link" href="index.html">Games</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="landing.html#safety">Safety Tips</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="signin.html">Sign In</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Header Section -->
-    <header class="header-section">
-        <div class="container">
-            <h1 class="display-4">Fire Safety Games</h1>
-            <p class="lead">Learn life-saving fire prevention knowledge through interactive games</p>
-        </div>
-    </header>
-
-    <main id="main-content" class="dashboard-container">
-        <div class="container">
-            <!-- Progress Section -->
-            <section class="progress-section">
-                <h2 class="text-center mb-4">Your Progress</h2>
-                <div id="game-progress-display">
-                    <div class="progress-stats">
-                        <div>Total Score: 0</div>
-                        <div>Games Completed: 0</div>
-                        <div>Games Played: 0</div>
-                    </div>
-                </div>
-                <h3 class="text-center mb-3">Achievements</h3>
-                <div id="achievement-badges" class="achievement-badges">
-                    <!-- Badges will be added by JavaScript -->
-                </div>
-            </section>
-
-            <!-- Games Grid -->
-            <section>
-                <h2 class="text-center mb-4">Choose a Game</h2>
-                <div class="game-grid">
-                    <!-- 4 Pics 1 Word -->
-                    <div class="game-item">
-                        <div class="game-item-header" style="background-image: url('https://via.placeholder.com/350x150?text=4+Pics+1+Word')">
-                            <div class="game-item-overlay">
-                                <h3 class="game-item-title">4 Pics 1 Word</h3>
-                            </div>
-                        </div>
-                        <div class="game-item-content">
-                            <p class="game-item-description">Identify fire safety terms by looking at four related images.</p>
-                            <div class="game-item-footer">
-                                <span class="difficulty difficulty-medium">Medium</span>
-                                <a href="4pics-game.html" class="btn btn-game">Play Now</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Crossword Puzzle -->
-                    <div class="game-item">
-                        <div class="game-item-header" style="background-image: url('https://via.placeholder.com/350x150?text=Crossword')">
-                            <div class="game-item-overlay">
-                                <h3 class="game-item-title">Crossword Puzzle</h3>
-                            </div>
-                        </div>
-                        <div class="game-item-content">
-                            <p class="game-item-description">Test your knowledge with a crossword puzzle of fire safety terms.</p>
-                            <div class="game-item-footer">
-                                <span class="difficulty difficulty-hard">Hard</span>
-                                <a href="crossword.html" class="btn btn-game">Play Now</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Missing Letter Game -->
-                    <div class="game-item">
-                        <div class="game-item-header" style="background-image: url('https://via.placeholder.com/350x150?text=Missing+Letter')">
-                            <div class="game-item-overlay">
-                                <h3 class="game-item-title">Missing Letter</h3>
-                            </div>
-                        </div>
-                        <div class="game-item-content">
-                            <p class="game-item-description">Fill in the blanks to complete fire safety terms and equipment names.</p>
-                            <div class="game-item-footer">
-                                <span class="difficulty difficulty-easy">Easy</span>
-                                <a href="guessthemissingletter.html" class="btn btn-game">Play Now</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- PPE Game -->
-                    <div class="game-item">
-                        <div class="game-item-header" style="background-image: url('https://via.placeholder.com/350x150?text=PPE+Game')">
-                            <div class="game-item-overlay">
-                                <h3 class="game-item-title">PPE Game</h3>
-                            </div>
-                        </div>
-                        <div class="game-item-content">
-                            <p class="game-item-description">Learn about personal protective equipment by matching items to their uses.</p>
-                            <div class="game-item-footer">
-                                <span class="difficulty difficulty-medium">Medium</span>
-                                <a href="ppe-game.html" class="btn btn-game">Play Now</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Quiz Game -->
-                    <div class="game-item">
-                        <div class="game-item-header" style="background-image: url('https://via.placeholder.com/350x150?text=Quiz+Game')">
-                            <div class="game-item-overlay">
-                                <h3 class="game-item-title">Quiz Game</h3>
-                            </div>
-                        </div>
-                        <div class="game-item-content">
-                            <p class="game-item-description">Test your fire safety knowledge with multiple-choice questions.</p>
-                            <div class="game-item-footer">
-                                <span class="difficulty difficulty-medium">Medium</span>
-                                <a href="quiz-game.html" class="btn btn-game">Play Now</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Word Scramble -->
-                    <div class="game-item">
-                        <div class="game-item-header" style="background-image: url('https://via.placeholder.com/350x150?text=Word+Scrambler')">
-                            <div class="game-item-overlay">
-                                <h3 class="game-item-title">Word Scramble</h3>
-                            </div>
-                        </div>
-                        <div class="game-item-content">
-                            <p class="game-item-description">Unscramble jumbled letters to form fire safety terminology.</p>
-                            <div class="game-item-footer">
-                                <span class="difficulty difficulty-easy">Easy</span>
-                                <a href="word-scramble.html" class="btn btn-game">Play Now</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </div>
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-dark text-white mt-5 py-4">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <h5>APULA Fire Safety Education</h5>
-                    <p>Educating communities through interactive learning</p>
-                </div>
-                <div class="col-md-6 text-md-right">
-                    <p>© 2023 APULA. All rights reserved.</p>
-                    <p><small>Optimized for all browsers including Lynx</small></p>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <!-- JavaScript -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="/js/accessibility.js"></script>
-    <script src="/js/game-progress.js"></script>
+    <div class="loader"></div>
+    <script>
+        // Redirect to landing page on load
+        window.onload = function() {
+            window.location.href = '/landing.html';
+        };
+    </script>
+</body>
+</html>

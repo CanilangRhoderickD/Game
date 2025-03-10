@@ -136,19 +136,69 @@ function initDatabase() {
       { name: 'PPE Game', description: 'Catch and equip personal protective equipment' }
     ];
 
-    const checkTypeStmt = db.prepare('SELECT id FROM game_types WHERE name = ?');
-    const insertTypeStmt = db.prepare('INSERT INTO game_types (name, description) VALUES (?, ?)');
-    
-    gameTypes.forEach(type => {
-      checkTypeStmt.get(type.name, (err, row) => {
+    // Process game types sequentially to avoid statement finalization issues
+    const insertGameTypes = (types, index) => {
+      if (index >= types.length) return;
+      
+      const type = types[index];
+      db.get('SELECT id FROM game_types WHERE name = ?', [type.name], (err, row) => {
         if (!row) {
-          insertTypeStmt.run(type.name, type.description);
+          db.run('INSERT INTO game_types (name, description) VALUES (?, ?)', 
+            [type.name, type.description], (err) => {
+              if (err) console.error('Error inserting game type:', err);
+              insertGameTypes(types, index + 1);
+            });
+        } else {
+          insertGameTypes(types, index + 1);
         }
       });
+    };
+    
+    insertGameTypes(gameTypes, 0);
+    
+    // Create user progress tables
+    db.serialize(() => {
+      // User progress table
+      db.run(`
+        CREATE TABLE IF NOT EXISTS user_progress (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          user_id INTEGER NOT NULL,
+          total_score INTEGER DEFAULT 0,
+          games_played INTEGER DEFAULT 0,
+          games_completed INTEGER DEFAULT 0,
+          login_streak INTEGER DEFAULT 0,
+          last_login TEXT,
+          created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+          updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (user_id) REFERENCES users (id)
+        )
+      `);
+      
+      // Game specific progress
+      db.run(`
+        CREATE TABLE IF NOT EXISTS game_progress (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          user_id INTEGER NOT NULL,
+          game_type TEXT NOT NULL,
+          high_score INTEGER DEFAULT 0,
+          times_played INTEGER DEFAULT 0,
+          completed INTEGER DEFAULT 0,
+          last_played TEXT,
+          FOREIGN KEY (user_id) REFERENCES users (id)
+        )
+      `);
+      
+      // Achievements table
+      db.run(`
+        CREATE TABLE IF NOT EXISTS user_achievements (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          user_id INTEGER NOT NULL,
+          achievement_id TEXT NOT NULL,
+          earned_at TEXT DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (user_id) REFERENCES users (id)
+        )
+      `);
     });
-
-    checkTypeStmt.finalize();
-    insertTypeStmt.finalize();
 
     // Insert default admin if it doesn't exist
     db.get('SELECT id FROM admins WHERE username = ?', ['admin'], (err, row) => {
@@ -156,6 +206,31 @@ function initDatabase() {
         // In a real application, you would hash the password
         db.run('INSERT INTO admins (username, password, role) VALUES (?, ?, ?)', 
           ['admin', 'password', 'administrator']);
+      }
+    });
+    
+    // Create users table for fallback authentication when MongoDB is unavailable
+    db.run(`CREATE TABLE IF NOT EXISTS users (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      username TEXT NOT NULL UNIQUE,
+      password TEXT NOT NULL,
+      isAdmin BOOLEAN DEFAULT 0,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`);
+    
+    // Insert a default user if it doesn't exist
+    db.get('SELECT id FROM users WHERE username = ?', ['user'], (err, row) => {
+      if (!row) {
+        db.run('INSERT INTO users (username, password, isAdmin) VALUES (?, ?, ?)', 
+          ['user', 'password', 0]);
+      }
+    });
+    
+    // Insert a default admin user if it doesn't exist
+    db.get('SELECT id FROM users WHERE username = ?', ['admin'], (err, row) => {
+      if (!row) {
+        db.run('INSERT INTO users (username, password, isAdmin) VALUES (?, ?, ?)', 
+          ['admin', 'password', 1]);
       }
     });
   });
